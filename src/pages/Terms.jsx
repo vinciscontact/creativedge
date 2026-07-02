@@ -1,4 +1,5 @@
 import LegalPage from '../components/ui/LegalPage';
+import Seo from '../components/Seo';
 
 const BODY = [
   "By accessing this website or engaging CreativzEdge's services, you agree to these terms and conditions.",
@@ -9,7 +10,15 @@ const BODY = [
 ];
 
 const Terms = () => (
-  <LegalPage eyebrow="Legal" title="Terms & Conditions" updated="Last updated: June 2026" body={BODY} />
+  <>
+    <Seo
+      title="Terms & Conditions | CreativzEdge"
+      description="The terms that apply when you use the CreativzEdge website or engage our design and digital growth services."
+      path="/terms"
+      breadcrumb="Terms & Conditions"
+    />
+    <LegalPage eyebrow="Legal" title="Terms & Conditions" updated="Last updated: June 2026" body={BODY} />
+  </>
 );
 
 export default Terms;

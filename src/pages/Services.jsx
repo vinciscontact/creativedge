@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Seo from '../components/Seo';
 import WhatWeDo from '../components/ui/WhatWeDo';
+import { SITE_URL } from '../config/site';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -128,6 +130,23 @@ const Services = () => {
     // overflow-clip (not hidden) keeps the ambient glows contained without
     // creating a scroll container, so the sticky card deck below can pin.
     <div className="relative pt-[220px] pb-20 overflow-clip min-h-screen bg-background">
+      <Seo
+        title="Graphic Design & Branding Services in Chennai & Mumbai | CreativzEdge"
+        description="Logo & brand identity, packaging design, social media creatives, brochures, posters, menus, business cards and ad campaigns — plus SEO/GEO/AEO digital growth. Serving Chennai, Mumbai and beyond."
+        path="/services"
+        breadcrumb="Services"
+        schema={services.map((s) => ({
+          '@context': 'https://schema.org',
+          '@type': 'Service',
+          serviceType: s.title,
+          description: s.desc,
+          provider: { '@id': `${SITE_URL}/#organization` },
+          areaServed: [
+            { '@type': 'City', name: 'Chennai' },
+            { '@type': 'City', name: 'Mumbai' },
+          ],
+        }))}
+      />
       <div className="ambient-glow top-[-10%] left-[-10%] bg-primary/20"></div>
       <div className="ambient-glow bottom-[-10%] right-[-10%] bg-secondary/10"></div>
 

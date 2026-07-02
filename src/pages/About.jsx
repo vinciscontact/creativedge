@@ -3,7 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ownerImg from '../assets/owner.jpeg';
+import Seo from '../components/Seo';
 import CtaHook from '../components/ui/CtaHook';
+import { asset } from '../lib/asset';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -129,6 +131,12 @@ const About = () => {
 
   return (
     <div className="relative pt-[220px] pb-20 overflow-hidden min-h-screen bg-background">
+      <Seo
+        title="About CreativzEdge — 15+ Years of Brand Design Experience"
+        description="Meet the CreativzEdge team: a Chennai & Mumbai design studio led by an Arena Multimedia–certified specialist. 1000+ projects delivered, 100+ happy clients, 15+ years of expertise."
+        path="/about"
+        breadcrumb="About"
+      />
       <div className="ambient-glow top-[-10%] right-[-10%] bg-primary/20"></div>
       
       <section className="max-w-7xl mx-auto px-margin relative z-10">
@@ -353,18 +361,18 @@ const About = () => {
                 company: "CreativzEdge"
               },
               {
-                imgSrc: "/images/portfolio%20projects/Our%20team/Venkat.webp",
+                imgSrc: asset("/images/portfolio%20projects/Our%20team/Venkat.webp"),
                 name: "Venkat",
                 role: "Strategic Advisor",
                 company: "cations.digital"
               },
               {
-                imgSrc: "/images/portfolio%20projects/Our%20team/Deepika.webp",
+                imgSrc: asset("/images/portfolio%20projects/Our%20team/Deepika.webp"),
                 name: "Deepika",
                 role: "Finance / CRM"
               },
               {
-                imgSrc: "/images/portfolio%20projects/Our%20team/sivabalan.webp",
+                imgSrc: asset("/images/portfolio%20projects/Our%20team/sivabalan.webp"),
                 name: "Sivabalan",
                 role: "Creative Strategy Director"
               }

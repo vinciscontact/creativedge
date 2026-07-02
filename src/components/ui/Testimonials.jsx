@@ -1,10 +1,11 @@
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
+import { asset } from '../../lib/asset';
 
 const GOOGLE_REVIEWS_URL =
   'https://www.google.com/search?kgmid=/g/11ylpc_5bh&hl=en-IN&q=Creativzedge#lrd=0x3a5267556e16bb0b:0x71872bfe942c800,1';
 
-const encode = (p) => encodeURI(p);
+const encode = (p) => encodeURI(asset(p));
 
 // Marquee / spotlight clients — featured with their photos.
 const famousClients = [

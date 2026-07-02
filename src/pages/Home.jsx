@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import Seo from '../components/Seo';
 import Testimonials from '../components/ui/Testimonials';
 import CtaHook from '../components/ui/CtaHook';
+import { asset } from '../lib/asset';
 
 // The two sides of the studio, framed as outcomes. The full service detail
 // lives on /services — this teaser stays deliberately distinct from it so no
@@ -26,6 +28,11 @@ const pillars = [
 const Home = () => {
   return (
     <div className="relative">
+      <Seo
+        title="CreativzEdge | Graphic Design & Branding Studio in Chennai & Mumbai"
+        description="CreativzEdge crafts logos, brand identities, packaging and social media creatives — plus SEO, GEO and AEO growth services. 15+ years of design expertise, studios in Chennai & Mumbai."
+        path="/"
+      />
       {/* Ambient Glows */}
       <div className="ambient-glow top-[-10%] left-[-10%] bg-primary"></div>
       <div className="ambient-glow bottom-[10%] right-[-10%] bg-secondary opacity-10"></div>
@@ -37,7 +44,7 @@ const Home = () => {
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
             <img
-              src="/images/hero%20background.webp"
+              src={asset('/images/hero%20background.webp')}
               alt="Hero Background"
               className="w-full h-full object-cover"
             />

@@ -49,7 +49,16 @@
       "Bash(curl -s -D - -o /dev/null http://localhost:5173/)",
       "Bash(grep -n \"to=\\\\\"/\\\\|Link\" src/components/Footer.jsx)",
       "PowerShell(git fetch origin)",
-      "PowerShell(git add -A)"
+      "PowerShell(git add -A)",
+      "PowerShell(git push origin main)",
+      "PowerShell(npm i react-helmet-async)",
+      "PowerShell(npm i -D puppeteer-core)",
+      "PowerShell($html = Get-Content \"dist\\\\about\\\\index.html\" -Raw; $idx = $html.IndexOf\\('rel=\"canonical\"'\\); $html.Substring\\([Math]::Max\\(0,$idx-300\\), 500\\))",
+      "PowerShell(npx eslint src/ scripts/prerender.mjs)",
+      "PowerShell(gh auth status 2>$null)",
+      "PowerShell(if \\(-not $?\\) { \"gh not authenticated\" })",
+      "PowerShell($env:VITE_BASE='/creativedge/'; $env:VITE_SITE_URL='https://vinciscontact.github.io/creativedge'; npm run build; $env:VITE_BASE=$null; $env:VITE_SITE_URL=$null)",
+      "PowerShell(npx eslint src/ scripts/)"
     ]
   }
 }

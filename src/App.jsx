@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
+import { HelmetProvider, Helmet } from 'react-helmet-async';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import DesignerPen from './components/ui/DesignerPen';
@@ -10,6 +11,8 @@ import Portfolio from './pages/Portfolio';
 import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
+import NotFound from './pages/NotFound';
+import { ORGANIZATION_SCHEMA } from './config/site';
 
 // Cross-page transition: quick exit, slightly slower entrance (feels snappy but
 // smooth). The scroll reset happens between the two, so the outgoing page never
@@ -33,15 +36,26 @@ const AnimatedRoutes = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          {/* Catch-all: real 404 page (noindex) instead of a blank soft-404 */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>
     </AnimatePresence>
   );
 };
 
+// Router must know the deploy subpath (GitHub Pages) — '/' everywhere else.
+const BASENAME = import.meta.env.BASE_URL.replace(/\/+$/, '') || '/';
+
 function App() {
   return (
-    <Router>
+    <HelmetProvider>
+      <Router basename={BASENAME}>
+      {/* Site-wide entity graph (brand + both studios + website) — ships on
+          every route; per-page tags come from each page's <Seo>. */}
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(ORGANIZATION_SCHEMA)}</script>
+      </Helmet>
       {/* reducedMotion="user" makes every framer-motion animation site-wide
           respect the OS "reduce motion" setting automatically. */}
       <MotionConfig reducedMotion="user">
@@ -55,7 +69,8 @@ function App() {
           <DesignerPen />
         </div>
       </MotionConfig>
-    </Router>
+      </Router>
+    </HelmetProvider>
   );
 }
 

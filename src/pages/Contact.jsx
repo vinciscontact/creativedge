@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import Seo from '../components/Seo';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -37,6 +38,12 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen dot-grid bg-background selection:bg-primary selection:text-surface">
+      <Seo
+        title="Contact CreativzEdge — Chennai & Mumbai Design Studios"
+        description="Start your project with CreativzEdge. Visit our Chennai (Saligramam) or Mumbai (Andheri East) studios, call +91 72999 42627, or send your brief via WhatsApp — we reply within hours."
+        path="/contact"
+        breadcrumb="Contact"
+      />
       <section className="max-w-7xl mx-auto px-margin pt-[220px] pb-stack-lg">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

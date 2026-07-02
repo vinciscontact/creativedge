@@ -1,4 +1,5 @@
 import LegalPage from '../components/ui/LegalPage';
+import Seo from '../components/Seo';
 
 const BODY = [
   'At CreativzEdge, we respect your privacy and are committed to protecting your personal information. Any information submitted through our website, contact forms, emails, or project inquiries is used solely to provide our services, communicate with you, and improve your experience.',
@@ -7,7 +8,15 @@ const BODY = [
 ];
 
 const Privacy = () => (
-  <LegalPage eyebrow="Legal" title="Privacy Policy" updated="Last updated: June 2026" body={BODY} />
+  <>
+    <Seo
+      title="Privacy Policy | CreativzEdge"
+      description="How CreativzEdge collects, uses and protects the personal information you share through our website and project inquiries."
+      path="/privacy"
+      breadcrumb="Privacy Policy"
+    />
+    <LegalPage eyebrow="Legal" title="Privacy Policy" updated="Last updated: June 2026" body={BODY} />
+  </>
 );
 
 export default Privacy;
