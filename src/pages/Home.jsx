@@ -1,8 +1,27 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import WhatWeDo from '../components/ui/WhatWeDo';
 import Testimonials from '../components/ui/Testimonials';
 import CtaHook from '../components/ui/CtaHook';
+
+// The two sides of the studio, framed as outcomes. The full service detail
+// lives on /services — this teaser stays deliberately distinct from it so no
+// content repeats across pages.
+const pillars = [
+  {
+    eyebrow: 'Design Studio',
+    title: 'Make it unforgettable.',
+    desc: 'From the logo on your card to the packaging on the shelf — every visual crafted to turn heads and win trust at first glance.',
+    chips: ['Logo & Identity', 'Packaging', 'Social Creatives', 'Print & Ads', 'Menus', 'Stationery'],
+    cta: 'Explore design services',
+  },
+  {
+    eyebrow: 'Digital Growth',
+    title: 'Make it findable.',
+    desc: 'Get discovered everywhere your customers search — Google today, AI answers tomorrow. Visibility that compounds month after month.',
+    chips: ['SEO', 'GEO', 'AEO', 'Social Media'],
+    cta: 'See growth services',
+  },
+];
 
 const Home = () => {
   return (
@@ -18,7 +37,7 @@ const Home = () => {
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
             <img
-              src="/images/hero%20background.jpg"
+              src="/images/hero%20background.webp"
               alt="Hero Background"
               className="w-full h-full object-cover"
             />
@@ -54,13 +73,15 @@ const Home = () => {
                 </Link>
 
 
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="cyber-btn w-full sm:w-auto"
-              >
-                Connect Now
-              </motion.button>
+              <Link to="/contact" className="w-full sm:w-auto">
+                <motion.span
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="cyber-btn block w-full sm:w-auto text-center"
+                >
+                  Connect Now
+                </motion.span>
+              </Link>
             </div>
             <div className="mt-16 sm:mt-20 flex flex-wrap justify-center gap-10 sm:gap-16 border-t border-primary/5 pt-12 w-full">
               <div className="text-center">
@@ -83,10 +104,62 @@ const Home = () => {
         </div>
       </section>
 
-      {/* What We Do — digital growth teaser */}
+      {/* What We Do — the two sides of the studio */}
       <section className="relative z-10 py-stack-lg">
         <div className="max-w-7xl mx-auto px-margin">
-          <WhatWeDo variant="compact" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="w-8 h-[2px] bg-primary"></div>
+              <span className="font-outfit text-[12px] font-black tracking-[0.4em] text-primary uppercase">What We Do</span>
+              <div className="w-8 h-[2px] bg-primary"></div>
+            </div>
+            <h2 className="syne-title text-[clamp(2rem,5vw,3.5rem)] text-primary leading-[1.05]">
+              Stand out. <span className="text-secondary">Get found.</span>
+            </h2>
+          </motion.div>
+
+          <div className="flex flex-col lg:flex-row gap-6">
+            {pillars.map((pillar, i) => (
+              <motion.div
+                key={pillar.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.12 }}
+                viewport={{ once: true }}
+                className="group relative flex-1 overflow-hidden rounded-[26px] bg-primary text-surface p-8 sm:p-12 flex flex-col transition-transform duration-500 hover:-translate-y-2"
+              >
+                <span className="font-outfit text-[11px] font-black tracking-[0.3em] text-accent uppercase mb-6 block">
+                  {pillar.eyebrow}
+                </span>
+                <h3 className="font-syne text-3xl sm:text-4xl text-surface mb-5 leading-tight group-hover:text-accent transition-colors">
+                  {pillar.title}
+                </h3>
+                <p className="font-inter text-[15px] text-surface/70 leading-relaxed mb-8 max-w-md">{pillar.desc}</p>
+                <div className="flex flex-wrap gap-2 mb-10">
+                  {pillar.chips.map((chip) => (
+                    <span
+                      key={chip}
+                      className="px-4 py-2 rounded-full border border-surface/15 text-[10px] font-outfit font-black uppercase tracking-widest text-surface/70"
+                    >
+                      {chip}
+                    </span>
+                  ))}
+                </div>
+                <Link
+                  to="/services"
+                  className="mt-auto inline-flex items-center gap-2 font-outfit text-[12px] font-black uppercase tracking-[0.2em] text-accent hover:gap-4 transition-all"
+                >
+                  {pillar.cta}
+                  <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 

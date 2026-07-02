@@ -12,7 +12,7 @@ const famousClients = [
     name: 'Drums Sivamani',
     role: 'Padma Shri • Percussion Legend',
     tagline: 'Truly Dedicated.',
-    img: encode('/images/famous client/Padma Shri Drums Sivamani.jpg'),
+    img: encode('/images/famous client/Padma Shri Drums Sivamani.webp'),
     quote:
       "I've been associated with Creativzedge (Venkat) for a long time for all my design needs, and the experience has always been outstanding. Creative work, quick turnaround, and always available no matter the time. Truly dedicated and highly professional. Highly recommended!",
   },
@@ -20,7 +20,7 @@ const famousClients = [
     name: 'Ms. Akila',
     role: 'Managing Partner — Dhara Logistics',
     tagline: 'Creative. Professional.',
-    img: encode('/images/famous client/Ms. Akila  Managing Partner - Dhara Logistics.jpg'),
+    img: encode('/images/famous client/Ms. Akila  Managing Partner - Dhara Logistics.webp'),
     quote:
       'Thank you for the excellent standee poster and video support. The designs were creative, professional, and delivered with great quality. Really appreciate the timely coordination, attention to detail, and smooth execution throughout the process.',
   },
@@ -130,7 +130,7 @@ const Testimonials = () => {
             Trusted by <span className="text-gradient">Real Brands.</span>
           </h2>
           <p className="font-inter text-base sm:text-body-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
-            Don't take our word for it — here's what our clients say about working with CreativeEdge.
+            Don't take our word for it — here's what our clients say about working with CreativzEdge.
           </p>
         </motion.div>
 

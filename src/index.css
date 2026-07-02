@@ -32,12 +32,14 @@
     background-color: var(--color-background);
     color: var(--color-on-background);
     font-family: var(--font-inter);
-    overflow-x: hidden;
+    /* `clip` (not `hidden`) — hidden turns body/#root into scroll containers,
+       which silently breaks position:sticky pinning (scroll-morph hero). */
+    overflow-x: clip;
     -webkit-font-smoothing: antialiased;
   }
-  
+
   #root {
-    overflow-x: hidden;
+    overflow-x: clip;
     width: 100%;
   }
   
@@ -46,6 +48,45 @@
     font-weight: 700;
     letter-spacing: -0.02em;
   }
+}
+
+/* CTA banner is dark (bg-primary) — the default .text-gradient fades from
+   accent to primary (#1A1A1A), which vanishes into this background. Fade to
+   white here instead so highlighted words stay fully readable. */
+.cta-hook .text-gradient {
+  background: linear-gradient(to right, var(--color-accent), #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Velvet service cards (Services deck) — deep matte charcoal with a soft
+   top-left sheen. Fully opaque: covered cards darken (never fade) so the
+   light page can't bleed through the stack. */
+.velvet-card {
+  background:
+    radial-gradient(120% 90% at 15% 0%, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0) 45%),
+    linear-gradient(155deg, #2a2c36 0%, #1c1e26 55%, #15161d 100%);
+}
+
+/* Pinned horizontal gallery (Portfolio → Packaging). The base markup is a
+   plain responsive grid; GSAP adds .hscroll-active on desktop when motion is
+   allowed, switching the track to a sideways shelf that scroll drives. */
+.hscroll-active {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.hscroll-active .hscroll-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+}
+.hscroll-active .hscroll-item {
+  width: 32vw;
+  max-width: 500px;
+  flex-shrink: 0;
 }
 
 @layer utilities {

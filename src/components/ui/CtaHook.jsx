@@ -20,7 +20,7 @@ const CtaHook = ({ eyebrow, title, subtitle, primary, secondary }) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-[2rem] bg-primary text-surface text-center px-6 sm:px-12 py-16 sm:py-24"
+          className="cta-hook relative overflow-hidden rounded-[2rem] bg-primary text-surface text-center px-6 sm:px-12 py-16 sm:py-24"
         >
           {/* Ambient accents */}
           <div className="ambient-glow top-[-30%] left-[10%] bg-accent opacity-20"></div>
@@ -35,7 +35,9 @@ const CtaHook = ({ eyebrow, title, subtitle, primary, secondary }) => {
                 {eyebrow}
               </span>
             )}
-            <h2 className="syne-title text-[clamp(1.4rem,6vw,4rem)] leading-[1.05] mb-7 max-w-4xl break-words [overflow-wrap:anywhere] text-balance">
+            {/* Sized so the longest word ("unforgettable.") always fits on one
+                line — no break-words/anywhere, which was snapping words in half. */}
+            <h2 className="syne-title text-[clamp(1.4rem,3.8vw,2.9rem)] leading-[1.15] mb-7 max-w-4xl text-balance">
               {title}
             </h2>
             {subtitle && (

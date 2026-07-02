@@ -1,44 +1,53 @@
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import WhatWeDo from '../components/ui/WhatWeDo';
 
+gsap.registerPlugin(ScrollTrigger);
 
 const Services = () => {
-  const x = useMotionValue(0);
-  const y = useMotionValue(-10); // Initial tilt
-  const xSpring = useSpring(x, { stiffness: 100, damping: 30 });
-  const ySpring = useSpring(y, { stiffness: 100, damping: 30 });
-  
-  const rotateY = useTransform(xSpring, (val) => `${val}deg`);
-  const rotateX = useTransform(ySpring, (val) => `${val}deg`);
+  const stackRef = useRef(null);
 
-  const [isAutoRotating, setIsAutoRotating] = useState(true);
-
-  const spin360 = () => {
-    setIsAutoRotating(false);
-    x.set(x.get() + 360);
-    setTimeout(() => setIsAutoRotating(true), 1000);
-  };
-
+  // Card-deck scroll effect: each service card sticks below the header and the
+  // next one slides over it; the card beneath gently scales back and dims.
+  // Depth and momentum without ever hijacking the scroll. Reduced motion gets
+  // plain stacking (still fully readable).
   useEffect(() => {
-    let interval;
-    if (isAutoRotating) {
-      interval = setInterval(() => {
-        x.set(x.get() - 0.5);
-      }, 30);
-    }
-    return () => clearInterval(interval);
-  }, [isAutoRotating, x]);
+    const mm = gsap.matchMedia();
+    mm.add(
+      '(prefers-reduced-motion: no-preference)',
+      () => {
+        const cards = gsap.utils.toArray('.service-stack');
+        cards.forEach((card, i) => {
+          const next = cards[i + 1];
+          if (!next) return;
+          // Darken (never fade) the covered card — opacity let the light page
+          // show through the deck and read as transparency. Starts only when
+          // the next card begins physically covering this one (not when it
+          // merely enters the viewport), so the active card stays fully lit
+          // while it's being read.
+          gsap.to(card.querySelector('.stack-inner'), {
+            scale: 0.95,
+            filter: 'brightness(0.72)',
+            transformOrigin: 'center top',
+            ease: 'none',
+            scrollTrigger: {
+              trigger: next,
+              start: () => `top ${140 + card.offsetHeight * 0.85}px`,
+              end: 'top 140px',
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          });
+        });
+      },
+      stackRef
+    );
+    return () => mm.revert();
+  }, []);
 
-
-  const stats = [
-
-    { label: 'SERVICE CATEGORIES', value: '8+' },
-    { label: 'BRANDS SERVED', value: '100+' },
-    { label: 'YEARS EXPERIENCE', value: '15+' },
-    { label: 'YEARS AS STUDIO', value: '5+' }
-  ];
 
   const services = [
     {
@@ -116,7 +125,9 @@ const Services = () => {
   ];
 
   return (
-    <div className="relative pt-[220px] pb-20 overflow-hidden min-h-screen bg-background">
+    // overflow-clip (not hidden) keeps the ambient glows contained without
+    // creating a scroll container, so the sticky card deck below can pin.
+    <div className="relative pt-[220px] pb-20 overflow-clip min-h-screen bg-background">
       <div className="ambient-glow top-[-10%] left-[-10%] bg-primary/20"></div>
       <div className="ambient-glow bottom-[-10%] right-[-10%] bg-secondary/10"></div>
 
@@ -157,128 +168,62 @@ const Services = () => {
           </motion.div>
         </div>
 
-        {/* Stats Section */}
-        <div className="flex flex-wrap justify-center gap-6 mb-24 w-full">
-          {stats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              viewport={{ once: true }}
-              className="stat-card-effect w-[calc(50%-12px)] md:flex-1 min-w-[150px] max-w-[250px]"
-            >
-              <div className="stat-card-inner">
-                <div className="stat-card__liquid"></div>
-                <div className="stat-card__shine"></div>
-                <div className="stat-card__content">
-                  <div className="text-5xl font-black text-primary mb-3 font-outfit tracking-tighter">{stat.value}</div>
-                  <div className="text-[10px] font-black text-secondary/60 uppercase tracking-[0.3em]">{stat.label}</div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-
-        {/* Services 3D Carousel Section */}
-        <div 
-          className="relative py-20 mb-32 group/carousel cursor-grab active:cursor-grabbing"
-          onMouseEnter={() => setIsAutoRotating(false)}
-          onMouseLeave={() => setIsAutoRotating(true)}
-        >
-          {/* 360 Control Button */}
-          <div className="absolute top-0 right-10 z-20">
-            <button 
-              onClick={spin360}
-              className="flex items-center gap-2 px-6 py-3 glass rounded-full border border-primary/10 text-[10px] font-black uppercase tracking-widest text-primary hover:border-accent transition-all"
-            >
-              <span className="material-symbols-outlined text-[16px] animate-spin-slow">autorenew</span>
-              360 Scan
-            </button>
-          </div>
-
-          {/* Ambient Background for Carousel */}
-          <div className="absolute inset-0 z-0 pointer-events-none">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle,rgba(197,168,128,0.1)_0%,transparent_70%)]"></div>
-            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/5 to-transparent"></div>
-            <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/5 to-transparent"></div>
-          </div>
-
-          <div className="rotating-wrapper relative z-10">
-            <motion.div 
-              className="rotating-inner" 
-              style={{ 
-                '--quantity': services.length,
-                rotateY,
-                rotateX,
-                animation: 'none'
-              }}
-              drag
-              onDrag={(e, info) => {
-                x.set(x.get() + info.delta.x * 0.5);
-                y.set(y.get() - info.delta.y * 0.5);
-              }}
-            >
-
-
+        {/* Services deck — each card sticks and the next slides over it */}
+        <div ref={stackRef} className="relative mb-32">
+          <div className="flex flex-col gap-6 md:gap-8">
             {services.map((service, i) => (
-              <div 
-                key={service.id} 
-                className="rotating-card group" 
-                style={{ '--index': i }}
+              <div
+                key={service.id}
+                className="service-stack sticky"
+                style={{ top: `calc(110px + ${i * 12}px)` }}
               >
-                <div 
-                  className="cyber-service-card group/inner"
-                  style={{ 
-                    '--card-color-glow': `${service.color}22`,
-                    '--card-color-1': service.color,
-                    '--card-color-2': service.color === '#ff4d4d' ? '#9d50ff' : '#ff6b9d' // Complementary color for gradient
-                  }}
+                <div
+                  className="stack-inner velvet-card relative overflow-hidden rounded-[28px] text-surface p-7 sm:p-10 md:p-14 border border-white/10 will-change-transform"
+                  style={{ boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08), 0 24px 80px rgba(0,0,0,0.35), 0 0 40px ${service.color}14` }}
                 >
-                  <div className="cyber-service-card-body p-8 flex flex-col h-full text-left">
-                    {/* Card Background Number */}
-                    <div className="absolute top-4 right-6 font-syne text-[60px] font-black text-primary/[0.03] group-hover:text-primary/[0.05] transition-colors pointer-events-none">
-                      {service.id}
+                  {/* Ghost index */}
+                  <span className="absolute top-6 right-8 font-syne text-[4rem] md:text-[6rem] font-black leading-none text-white/[0.05] select-none pointer-events-none">
+                    {service.id}
+                  </span>
+                  {/* Accent edge */}
+                  <span className="absolute left-0 top-0 h-full w-1" style={{ backgroundColor: service.color }}></span>
+
+                  <span
+                    className="inline-block px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] border mb-7"
+                    style={{ color: service.color, borderColor: `${service.color}44`, backgroundColor: `${service.color}11` }}
+                  >
+                    {service.category}
+                  </span>
+
+                  <div className="flex flex-col md:flex-row md:items-start gap-8 md:gap-14">
+                    <div className="md:w-1/2">
+                      <h3 className="font-syne text-2xl sm:text-3xl md:text-4xl text-surface mb-5 leading-tight">{service.title}</h3>
+                      <p className="font-inter text-[14px] sm:text-[15px] text-surface/70 leading-relaxed max-w-lg">{service.desc}</p>
                     </div>
-
-                    {/* Category Label */}
-                    <div className="mb-6">
-                      <span 
-                        className="px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] border"
-                        style={{ color: service.color, borderColor: `${service.color}44`, backgroundColor: `${service.color}11` }}
-                      >
-                        {service.category}
-                      </span>
-                    </div>
-
-                    {/* Title & Desc */}
-                    <h3 className="text-xl text-white mb-3 font-syne group-hover:text-accent transition-colors">{service.title}</h3>
-                    <p className="text-[12px] text-white/80 leading-relaxed mb-6 font-inter line-clamp-3">
-                      {service.desc}
-                    </p>
-
-                    {/* Bullets */}
-                    <ul className="space-y-2 mb-8">
-                      {service.bullets.slice(0, 3).map((bullet, idx) => (
-                        <li key={idx} className="flex items-center gap-2 text-[11px] text-white/70 group-hover:text-white transition-colors">
-                          <div className="w-1 h-1 rounded-full" style={{ backgroundColor: service.color }}></div>
+                    <ul className="md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 content-start">
+                      {service.bullets.map((bullet) => (
+                        <li key={bullet} className="flex items-start gap-3 text-[13px] text-surface/80 font-inter leading-relaxed">
+                          <span className="mt-[7px] w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: service.color }}></span>
                           {bullet}
                         </li>
                       ))}
                     </ul>
+                  </div>
 
-                    {/* Footer */}
-                    <div className="mt-auto pt-4 border-t border-white/10 flex justify-between items-center">
-                      <span className="text-[9px] font-black uppercase tracking-widest text-white/50">{service.footer}</span>
-                      <div className="w-2 h-2 border transition-colors group-hover:bg-current" style={{ borderColor: `${service.color}66`, color: service.color }}></div>
-                    </div>
+                  <div className="mt-10 pt-6 border-t border-white/10 flex items-center justify-between gap-4 flex-wrap">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-surface/50">{service.footer}</span>
+                    <Link
+                      to="/contact"
+                      className="inline-flex items-center gap-2 font-outfit text-[11px] font-black uppercase tracking-[0.2em] hover:gap-3 transition-all"
+                      style={{ color: service.color }}
+                    >
+                      Start This Project
+                      <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    </Link>
                   </div>
                 </div>
-
               </div>
             ))}
-            </motion.div>
           </div>
         </div>
 

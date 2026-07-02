@@ -353,42 +353,50 @@ const About = () => {
                 company: "CreativzEdge"
               },
               {
-                imgSrc: "/images/portfolio%20projects/Our%20team/Venkat.jpg",
+                imgSrc: "/images/portfolio%20projects/Our%20team/Venkat.webp",
                 name: "Venkat",
                 role: "Strategic Advisor",
                 company: "cations.digital"
               },
               {
-                imgSrc: "/images/portfolio%20projects/Our%20team/Deepika.jpg",
+                imgSrc: "/images/portfolio%20projects/Our%20team/Deepika.webp",
                 name: "Deepika",
                 role: "Finance / CRM"
               },
               {
-                imgSrc: "/images/portfolio%20projects/Our%20team/sivabalan.jpg",
+                imgSrc: "/images/portfolio%20projects/Our%20team/sivabalan.webp",
                 name: "Sivabalan",
                 role: "Creative Strategy Director"
               }
             ].map((member, i) => (
-              <div
-                key={i}
-                onMouseMove={(e) => handleMouseMove(e, e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeave(e, e.currentTarget)}
-                className="team-card aspect-[3/4] group relative overflow-hidden rounded-[30px] border border-primary/10 bg-surface/40 shadow-2xl opacity-0 cursor-default"
-                style={{ transformStyle: 'preserve-3d' }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none" style={{ transform: 'translateZ(20px)' }}></div>
-                
-                <div className="absolute bottom-0 left-0 w-full p-8 z-20 translate-y-4 group-hover:translate-y-0 transition-transform duration-500" style={{ transform: 'translateZ(40px)' }}>
-                  <h3 className="text-2xl font-syne text-white mb-1 drop-shadow-lg">{member.name}</h3>
-                  <p className="text-accent font-outfit text-sm tracking-wider uppercase font-bold mb-1 drop-shadow-md">{member.role}</p>
-                  {member.company && <p className="text-white/70 text-xs font-inter">{member.company}</p>}
+              /* Caption sits below the photo (not overlaid) so names and roles
+                 align identically across all four cards no matter how each
+                 photo is framed. Grayscale-by-default unifies the mixed
+                 color/B&W portraits; color returns on hover. */
+              <div key={i} className="team-card group opacity-0 cursor-default">
+                <div
+                  onMouseMove={(e) => handleMouseMove(e, e.currentTarget)}
+                  onMouseLeave={(e) => handleMouseLeave(e, e.currentTarget)}
+                  className="relative overflow-hidden rounded-[24px] aspect-[3/4] border border-primary/10 bg-surface shadow-xl"
+                  style={{ transformStyle: 'preserve-3d' }}
+                >
+                  <img
+                    src={member.imgSrc}
+                    alt={member.name}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-[110%] -top-[5%] absolute left-0 object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-[1.04] transition-all duration-700 pointer-events-none"
+                  />
+                  {/* Soft accent wash on hover ties the cards to the theme */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-accent/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
                 </div>
 
-                <img
-                  src={member.imgSrc}
-                  alt={member.name}
-                  className="w-full h-[110%] -top-[5%] absolute left-0 object-cover object-top group-hover:scale-105 transition-transform duration-1000 pointer-events-none"
-                />
+                <div className="pt-5 px-1 text-center">
+                  <h3 className="text-xl font-syne text-primary mb-1 group-hover:text-accent transition-colors duration-300">{member.name}</h3>
+                  <p className="text-secondary font-outfit text-[11px] tracking-[0.15em] uppercase font-black mb-1">{member.role}</p>
+                  {/* Reserve the line even when empty so all captions stay level */}
+                  <p className="text-on-surface-variant/60 text-xs font-inter min-h-[1.25rem]">{member.company || ' '}</p>
+                </div>
               </div>
             ))}
           </div>

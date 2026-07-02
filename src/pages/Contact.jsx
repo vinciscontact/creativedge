@@ -98,10 +98,12 @@ const Contact = () => {
                   required
                 >
                   <option className="bg-surface-container-highest" value=""></option>
-                  <option className="bg-surface-container-highest" value="Digital Strategy">Digital Strategy</option>
-                  <option className="bg-surface-container-highest" value="Brand Identity">Brand Identity</option>
-                  <option className="bg-surface-container-highest" value="Web Architecture">Web Architecture</option>
-                  <option className="bg-surface-container-highest" value="Creative Production">Creative Production</option>
+                  <option className="bg-surface-container-highest" value="Logo & Brand Identity">Logo &amp; Brand Identity</option>
+                  <option className="bg-surface-container-highest" value="Social Media Creatives">Social Media Creatives</option>
+                  <option className="bg-surface-container-highest" value="Packaging Design">Packaging Design</option>
+                  <option className="bg-surface-container-highest" value="Print & Advertising">Print &amp; Advertising (Brochures, Posters, Menus)</option>
+                  <option className="bg-surface-container-highest" value="Digital Growth (SEO / GEO / AEO / SMO)">Digital Growth (SEO / GEO / AEO / SMO)</option>
+                  <option className="bg-surface-container-highest" value="Something Else">Something Else / Custom Brief</option>
                 </select>
                 <label className="absolute left-0 top-0 font-space text-label-caps text-on-surface-variant pointer-events-none transition-all uppercase peer-placeholder-shown:top-6 peer-placeholder-shown:text-body-lg peer-focus:top-0 peer-focus:text-label-caps peer-focus:text-secondary" htmlFor="service">Service</label>
                 <span className="material-symbols-outlined absolute right-0 top-6 pointer-events-none text-on-surface-variant">expand_more</span>
@@ -125,9 +127,11 @@ const Contact = () => {
                   className="intense-glow-btn w-full"
                   type="submit"
                 >
-                  {status === 'success' ? 'TRANSMITTED' : 'INITIATE TRANSMISSION'}
+                  {status === 'success' ? 'SENT — CHECK WHATSAPP' : 'SEND VIA WHATSAPP'}
                 </button>
-
+                <p className="font-space text-[11px] text-on-surface-variant/70 mt-3 text-center uppercase tracking-widest">
+                  Opens WhatsApp with your brief pre-filled — we usually reply within a few hours.
+                </p>
 
                 {status === 'success' && <p className="text-secondary font-space text-label-caps mt-4">Opening WhatsApp — just hit send to reach us directly.</p>}
                 {status === 'error' && <p className="text-error font-space text-label-caps mt-4">Something went wrong. Please try again.</p>}
