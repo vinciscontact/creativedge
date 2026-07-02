@@ -6,23 +6,17 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - uses: actions/setup-node@v4
         with:
@@ -34,23 +28,21 @@ jobs:
       - name: Build and prerender
         env:
           # Project pages live under /<repo>/ — both the bundler and the
-          # router read this. Remove (or set to /) once a custom domain is
-          # attached, and update VITE_SITE_URL to the real domain.
+          # router read this. Change to / (and set the real domain in
+          # VITE_SITE_URL) once a custom domain is attached.
           VITE_BASE: /creativedge/
           VITE_SITE_URL: https://vinciscontact.github.io/creativedge
           PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
         run: npm run build
 
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
+      - name: Keep Jekyll off the published files
+        run: touch dist/.nojekyll
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      # Publishes dist/ to the gh-pages branch — Pages serves that branch
+      # ("Deploy from a branch" -> gh-pages / root in repo settings).
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
+          force_orphan: true
