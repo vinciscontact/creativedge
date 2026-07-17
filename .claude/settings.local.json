@@ -58,7 +58,31 @@
       "PowerShell(gh auth status 2>$null)",
       "PowerShell(if \\(-not $?\\) { \"gh not authenticated\" })",
       "PowerShell($env:VITE_BASE='/creativedge/'; $env:VITE_SITE_URL='https://vinciscontact.github.io/creativedge'; npm run build; $env:VITE_BASE=$null; $env:VITE_SITE_URL=$null)",
-      "PowerShell(npx eslint src/ scripts/)"
+      "PowerShell(npx eslint src/ scripts/)",
+      "PowerShell(Start-Sleep -Seconds 20; try { $runs = Invoke-RestMethod \"https://api.github.com/repos/vinciscontact/creativedge/actions/runs?per_page=3\" -ErrorAction Stop; $runs.workflow_runs | Select-Object name, status, conclusion, html_url | Format-List } catch { \"API says: $\\($_.Exception.Message\\) \\(repo may be private - check the Actions tab manually\\)\" })",
+      "PowerShell($jobs = Invoke-RestMethod \"https://api.github.com/repos/vinciscontact/creativedge/actions/runs/28585467019/jobs\"; $jobs.jobs | ForEach-Object { \"JOB: $\\($_.name\\) -> $\\($_.conclusion\\)\"; $_.steps | Where-Object { $_.conclusion -eq 'failure' } | ForEach-Object { \"  FAILED STEP: $\\($_.name\\)\" } })",
+      "PowerShell($runs = Invoke-RestMethod \"https://api.github.com/repos/vinciscontact/creativedge/actions/runs?per_page=5\"; $runs.workflow_runs | Select-Object name, status, conclusion, run_started_at, html_url | Format-List; try { Invoke-RestMethod \"https://api.github.com/repos/vinciscontact/creativedge/pages\" -ErrorAction Stop } catch { \"Pages API: $\\($_.Exception.Response.StatusCode\\) - Pages likely not enabled yet\" })",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "PowerShell($env:VITE_BASE='/creativedge/'; $env:VITE_SITE_URL='https://vinciscontact.github.io/creativedge'; npm run build; $env:VITE_BASE=$null; $env:VITE_SITE_URL=$null; New-Item -ItemType File -Path \"dist\\\\.nojekyll\" -Force | Out-Null; \"dist ready: $\\(Test-Path 'dist\\\\index.html'\\) / 404: $\\(Test-Path 'dist\\\\404.html'\\)\")",
+      "PowerShell(git add .github/workflows/deploy.yml)",
+      "PowerShell(git commit -m \"Deploy via gh-pages branch instead of Pages artifact flow\" -m \"Branch mode works with the default Pages setting - no manual enablement of the Actions source needed.\" -m \"Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>\")",
+      "PowerShell(try { $p = Invoke-RestMethod \"https://api.github.com/repos/vinciscontact/creativedge/pages\" -ErrorAction Stop; \"Pages ENABLED: $\\($p.html_url\\) source=$\\($p.source.branch\\)/$\\($p.source.path\\) status=$\\($p.status\\)\" } catch { \"Pages not auto-enabled yet\" }; try { $r = Invoke-WebRequest \"https://vinciscontact.github.io/creativedge/\" -UseBasicParsing -ErrorAction Stop; \"Site responds: HTTP $\\($r.StatusCode\\)\" } catch { \"Site fetch: $\\($_.Exception.Message\\)\" })",
+      "PowerShell(try { $img = Invoke-WebRequest \"https://vinciscontact.github.io/creativedge/images/hero%20background.webp\" -Method Head -UseBasicParsing; \"hero image: HTTP $\\($img.StatusCode\\) \\($\\($img.Headers.'Content-Type'\\)\\)\" } catch { \"hero image failed: $\\($_.Exception.Message\\)\" }; try { Invoke-WebRequest \"https://vinciscontact.github.io/creativedge/no-such-page\" -UseBasicParsing -ErrorAction Stop | Out-Null; \"unknown path: HTTP 200 \\(unexpected\\)\" } catch { \"unknown path: HTTP $\\($_.Exception.Response.StatusCode.value__\\) \\(404.html served\\)\" })",
+      "Skill(run)",
+      "Skill(run:*)",
+      "PowerShell(Get-ChildItem \"C:\\\\freelance\\\\cyberedge-studio\\\\public\\\\images\\\\portfolio projects\\\\Our team\" | Select-Object Name, @{n='KB';e={[math]::Round\\($_.Length/1KB\\)}})",
+      "PowerShell(node \"C:\\\\Users\\\\Sathya\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--freelance-cyberedge-studio\\\\8fcdbcf2-5fb6-4456-a0d8-fa44e09f5b40\\\\scratchpad\\\\splice-team.mjs\")",
+      "PowerShell(npx eslint src/pages/About.jsx src/components/ui/TeamSection.jsx)",
+      "PowerShell(npx eslint src/pages/About.jsx)",
+      "PowerShell(npx eslint src/components/ui/TeamSection.jsx)",
+      "PowerShell(npx eslint src/components/ui/Testimonials.jsx)",
+      "PowerShell(npx eslint src/pages/About.jsx src/pages/Home.jsx)",
+      "PowerShell(\\(Get-Content src/index.css | Measure-Object -Line\\).Lines; Get-Content src/index.css -Tail 12)",
+      "PowerShell(npx eslint src/components/ui/CtaHook.jsx src/pages/Home.jsx src/pages/About.jsx src/pages/Portfolio.jsx)",
+      "PowerShell(npx eslint src/components/ui/TeamSection.jsx src/pages/About.jsx src/pages/Portfolio.jsx src/components/Header.jsx)",
+      "PowerShell(npx eslint src/pages/Contact.jsx)",
+      "PowerShell(npx eslint src/pages/Services.jsx src/pages/Portfolio.jsx)",
+      "PowerShell(npx eslint src/pages/Portfolio.jsx)"
     ]
   }
 }

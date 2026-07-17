@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { asset } from '../../lib/asset';
 
@@ -107,6 +107,47 @@ const Testimonials = () => {
     el.scrollBy({ left: dir * el.clientWidth * 0.9, behavior: 'smooth' });
   };
 
+  // Auto-advance the wall of reviews; pauses while the visitor hovers or
+  // swipes, loops back to the start, and stays off for reduced-motion users.
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let paused = false;
+    let resumeTimer;
+    const pause = () => {
+      paused = true;
+      clearTimeout(resumeTimer);
+    };
+    const resumeSoon = () => {
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => {
+        paused = false;
+      }, 5000);
+    };
+
+    el.addEventListener('pointerenter', pause);
+    el.addEventListener('pointerleave', resumeSoon);
+    el.addEventListener('touchstart', pause, { passive: true });
+    el.addEventListener('touchend', resumeSoon, { passive: true });
+
+    const id = setInterval(() => {
+      if (paused || document.hidden) return;
+      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 8;
+      if (atEnd) el.scrollTo({ left: 0, behavior: 'smooth' });
+      else el.scrollBy({ left: el.clientWidth * 0.9, behavior: 'smooth' });
+    }, 4500);
+
+    return () => {
+      clearInterval(id);
+      clearTimeout(resumeTimer);
+      el.removeEventListener('pointerenter', pause);
+      el.removeEventListener('pointerleave', resumeSoon);
+      el.removeEventListener('touchstart', pause);
+      el.removeEventListener('touchend', resumeSoon);
+    };
+  }, []);
+
   return (
     <section className="py-stack-lg relative z-10 overflow-hidden">
       <div className="ambient-glow top-[10%] left-[-10%] bg-accent opacity-5"></div>
@@ -135,97 +176,75 @@ const Testimonials = () => {
           </p>
         </motion.div>
 
-        {/* Famous client spotlight — storytelling, alternating rows */}
-        <div className="mb-12">
-          <div className="flex items-center justify-center gap-3 mb-16">
-            <div className="w-8 h-[1px] bg-accent/40"></div>
-            <span className="font-outfit text-[11px] font-black tracking-[0.35em] text-accent uppercase">
-              The Stories Behind the Work
-            </span>
-            <div className="w-8 h-[1px] bg-accent/40"></div>
-          </div>
-
-          <div className="flex flex-col gap-20 md:gap-28">
-            {famousClients.map((c, i) => {
-              const flip = i % 2 === 1;
-              return (
-                <motion.div
-                  key={c.name}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-80px' }}
-                  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                  className={`grid lg:grid-cols-12 gap-8 lg:gap-14 items-center ${flip ? 'lg:[direction:rtl]' : ''}`}
-                >
-                  {/* Photo panel — object-contain so nothing is ever cropped */}
-                  <div className="lg:col-span-5 [direction:ltr]">
-                    <div className="relative rounded-3xl overflow-hidden border border-primary/10 bg-gradient-to-br from-primary/[0.06] to-accent/[0.06] shadow-[0_20px_60px_rgba(0,0,0,0.08)] group">
-                      <div className="aspect-[4/5] flex items-center justify-center p-4">
-                        <img
-                          src={c.img}
-                          alt={c.name}
-                          className="max-w-full max-h-full object-contain rounded-2xl transition-transform duration-700 group-hover:scale-[1.03]"
-                        />
-                      </div>
-                      <span className="absolute top-5 left-5 font-outfit text-[9px] font-black tracking-[0.25em] text-primary uppercase bg-accent px-3 py-1.5 rounded-full shadow-lg">
-                        Featured Client
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Story content */}
-                  <div className="lg:col-span-7 [direction:ltr]">
-                    <span className="font-syne text-[3.5rem] md:text-[5rem] leading-none text-primary/5 font-extrabold block mb-2 select-none">
-                      0{i + 1}
-                    </span>
-                    <Stars count={5} />
-                    <h3 className="syne-title text-3xl md:text-5xl text-primary mb-7 leading-[0.95]">
-                      <span className="text-gradient">{c.tagline}</span>
-                    </h3>
-                    <p className="font-inter text-on-surface-variant leading-relaxed text-lg mb-9 max-w-2xl">
-                      <span className="text-accent text-3xl leading-none mr-1 align-[-0.3em] font-syne">“</span>
-                      {c.quote}
-                    </p>
-                    <div className="pt-6 border-t border-primary/10 max-w-2xl">
-                      <div className="font-outfit text-lg font-black text-primary uppercase tracking-wide">{c.name}</div>
-                      <div className="font-inter text-sm text-secondary">{c.role}</div>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Divider into the wall of reviews */}
-        <div className="text-center mb-16 mt-4">
-          <span className="font-outfit text-[11px] font-black tracking-[0.35em] text-secondary uppercase">
-            …and many more who trust us
-          </span>
-        </div>
-
-        {/* Slideable wall of reviews */}
+        {/* Slideable wall of reviews — featured clients lead, Google reviews follow */}
         <div className="relative">
           {/* Track — native swipe/scroll-snap; drag on touch, arrows on desktop */}
           <div
             ref={trackRef}
             className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 -mx-margin px-margin scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           >
+            {/* Featured clients — richer cards with photo and badge */}
+            {famousClients.map((c) => (
+              <div
+                key={c.name}
+                className="snap-start shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
+              >
+                <div className="glass-card h-full flex flex-col overflow-hidden border border-accent/25">
+                  <div className="relative bg-gradient-to-br from-primary/[0.06] to-accent/[0.08]">
+                    <div className="h-52 flex items-center justify-center p-3">
+                      <img
+                        src={c.img}
+                        alt={c.name}
+                        loading="lazy"
+                        decoding="async"
+                        className="max-w-full max-h-full object-contain rounded-xl"
+                      />
+                    </div>
+                    <span className="absolute top-4 left-4 font-outfit text-[9px] font-black tracking-[0.25em] text-primary uppercase bg-accent px-3 py-1.5 rounded-full shadow-lg">
+                      Featured Client
+                    </span>
+                  </div>
+                  <div className="p-8 pt-6 flex flex-col flex-grow">
+                    <Stars count={5} />
+                    <h3 className="syne-title text-xl text-primary mb-3">
+                      <span className="text-gradient">{c.tagline}</span>
+                    </h3>
+                    <p className="font-inter text-primary/80 leading-relaxed text-[15px] mb-8 flex-grow">"{c.quote}"</p>
+                    <div className="pt-6 border-t border-primary/5">
+                      <div className="font-outfit text-sm font-black text-primary uppercase tracking-wide">{c.name}</div>
+                      <div className="font-inter text-[12px] text-secondary">{c.role}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+
             {testimonials.map((t) => (
               <div
                 key={t.name}
                 className="snap-start shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
               >
-                <div className="glass-card p-8 h-full flex flex-col">
-                  <Stars count={t.rating} />
-                  <p className="font-inter text-primary/80 leading-relaxed text-[15px] mb-8 flex-grow">"{t.quote}"</p>
-                  <div className="flex items-center gap-4 pt-6 border-t border-primary/5">
-                    <div className="w-11 h-11 rounded-full bg-primary text-surface flex items-center justify-center font-outfit text-[13px] font-black shrink-0">
-                      {initials(t.name)}
-                    </div>
-                    <div>
-                      <div className="font-outfit text-sm font-black text-primary uppercase tracking-wide">{t.name}</div>
-                      <div className="font-inter text-[12px] text-secondary">{t.role}</div>
+                <div className="glass-card h-full flex flex-col overflow-hidden">
+                  {/* Initial panel mirrors the featured cards' photo slot so every card shares the same top rhythm */}
+                  <div className="h-52 flex items-center justify-center bg-gradient-to-br from-primary/[0.06] to-accent/[0.08]">
+                    <span
+                      aria-hidden="true"
+                      className="font-syne font-extrabold uppercase text-[6.5rem] leading-none text-primary/15 select-none"
+                    >
+                      {t.name[0]}
+                    </span>
+                  </div>
+                  <div className="p-8 pt-6 flex flex-col flex-grow">
+                    <Stars count={t.rating} />
+                    <p className="font-inter text-primary/80 leading-relaxed text-[15px] mb-8 flex-grow">"{t.quote}"</p>
+                    <div className="flex items-center gap-4 pt-6 border-t border-primary/5">
+                      <div className="w-11 h-11 rounded-full bg-primary text-surface flex items-center justify-center font-outfit text-[13px] font-black shrink-0">
+                        {initials(t.name)}
+                      </div>
+                      <div>
+                        <div className="font-outfit text-sm font-black text-primary uppercase tracking-wide">{t.name}</div>
+                        <div className="font-inter text-[12px] text-secondary">{t.role}</div>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
@@ -91,6 +91,25 @@ const marqueeItems = ['Logo Design', 'Brand Identity', 'Social Media', 'Packagin
 
 const Portfolio = () => {
   const rootRef = useRef(null);
+  // Chapter filter — 'all' or a chapter label. Changing it re-runs the GSAP
+  // setup effect below so reveals/pins rebuild against the filtered DOM.
+  const [filter, setFilter] = useState('all');
+
+  // Deep links from the services page (/portfolio#logo-design) land on their
+  // chapter. Delayed so the route transition's scroll-to-top and the pinned
+  // hero's ScrollTrigger setup have already settled.
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash) return;
+    const t = setTimeout(() => {
+      const el = document.getElementById(hash.slice(1));
+      if (el) {
+        ScrollTrigger.refresh();
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 800);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     const mm = gsap.matchMedia();
@@ -252,7 +271,7 @@ const Portfolio = () => {
       pendingImgs.forEach((img) => img.removeEventListener('load', queueRefresh));
       mm.revert();
     };
-  }, []);
+  }, [filter]);
 
   return (
     // overflow-clip (not hidden!) — clips the ambient glows that stick out past
@@ -280,7 +299,7 @@ const Portfolio = () => {
             <span className="font-outfit text-[12px] font-black tracking-[0.4em] text-secondary uppercase">The Work</span>
             <div className="w-8 h-[1px] bg-secondary/40"></div>
           </div>
-          <h1 className="intro-headline syne-title text-[clamp(2rem,7vw,5.5rem)] text-primary mb-10 leading-[1.1] break-words [overflow-wrap:anywhere]">
+          <h1 className="intro-headline syne-title text-[clamp(2rem,7vw,5.5rem)] text-primary mb-10 leading-[1.1]">
             A Brand, <span className="text-gradient">Built.</span>
           </h1>
           <p className="intro-rise intro-rise-2 font-inter text-body-lg text-on-surface-variant max-w-3xl mx-auto leading-relaxed">
@@ -312,9 +331,32 @@ const Portfolio = () => {
           </div>
         </div>
 
-        {/* Story chapters */}
-        {chapters.map((chapter, ci) => (
-          <div key={chapter.no} className="mb-40">
+        {/* Chapter filter — one pill per category */}
+        <div className="mb-20 flex flex-wrap justify-center gap-3">
+          {['All', ...chapters.map((c) => c.label)].map((label) => {
+            const value = label === 'All' ? 'all' : label;
+            const isActive = filter === value;
+            return (
+              <button
+                key={label}
+                type="button"
+                onClick={() => setFilter(value)}
+                aria-pressed={isActive}
+                className={`px-5 py-2.5 rounded-full font-outfit text-[11px] font-black uppercase tracking-widest border transition-all ${
+                  isActive
+                    ? 'bg-primary text-surface border-primary'
+                    : 'glass text-secondary border-primary/10 hover:border-accent hover:text-primary'
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Story chapters — ids let service cards deep-link straight to their work */}
+        {chapters.filter((c) => filter === 'all' || c.label === filter).map((chapter, ci) => (
+          <div key={chapter.no} id={chapter.label.toLowerCase().replace(/\s+/g, '-')} className="mb-40 scroll-mt-32">
             <div className={`chapter-intro flex flex-col md:flex-row md:items-end gap-6 mb-14 ${ci % 2 === 1 ? 'md:flex-row-reverse md:text-right' : ''}`}>
               <span className="chapter-no font-syne text-[5rem] md:text-[8rem] leading-none text-primary/5 font-extrabold select-none">
                 {chapter.no}
@@ -427,6 +469,7 @@ const Portfolio = () => {
 
       {/* Engagement hook */}
       <CtaHook
+        variant="circle"
         eyebrow="You've Seen the Work"
         title={
           <>

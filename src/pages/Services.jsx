@@ -59,7 +59,8 @@ const Services = () => {
       desc: 'Bold, scroll-stopping ad creatives built to convert attention into action. Digital banners, print ads, billboard layouts — every format, every platform.',
       bullets: ['Google & Meta display ads', 'Billboard & OOH layouts', 'Campaign visual systems', 'Print ad formats'],
       footer: 'PRINT · DIGITAL · OOH',
-      color: '#ff4d4d'
+      color: '#ff4d4d',
+      work: '/portfolio#social-media-design'
     },
     {
       id: '02',
@@ -68,7 +69,8 @@ const Services = () => {
       desc: 'Professionally laid-out brochures that tell your brand story with clarity and visual impact. Bi-fold, tri-fold, multi-page — structured to inform and impress.',
       bullets: ['Bi-fold & tri-fold brochures', 'Product catalogues', 'Company profiles', 'Print-ready PDF output'],
       footer: 'OFFSET · DIGITAL · PRINT',
-      color: '#00f5d4'
+      color: '#00f5d4',
+      work: '/portfolio#brand-identity'
     },
     {
       id: '03',
@@ -77,7 +79,8 @@ const Services = () => {
       desc: 'Your logo is the face of your brand. We craft timeless, versatile identities that work across every medium — from business cards to billboards.',
       bullets: ['Primary & secondary logos', 'Brand colour palette', 'Typography system', 'Brand guidelines PDF'],
       footer: 'AI · SVG · PNG · PDF',
-      color: '#ff4d4d'
+      color: '#ff4d4d',
+      work: '/portfolio#logo-design'
     },
     {
       id: '04',
@@ -86,7 +89,8 @@ const Services = () => {
       desc: 'Menus that make food look irresistible before the first bite. Elegant layouts, appetite-driving typography, and designs built for easy seasonal updates.',
       bullets: ['Dine-in & takeaway menus', 'QR menu design', 'Table cards & tent cards', 'Seasonal update layouts'],
       footer: 'PRINT · WEB · QR',
-      color: '#00f5d4'
+      color: '#00f5d4',
+      work: '/portfolio'
     },
     {
       id: '05',
@@ -95,7 +99,8 @@ const Services = () => {
       desc: 'Packaging is your silent salesperson. We design shelf-ready, brand-aligned packaging that captures attention and communicates product value at a glance.',
       bullets: ['Box & carton dielines', 'Label & sticker design', 'Pouch & sachet layouts', '3D mockup visualisation'],
       footer: 'DIELINE · 3D MOCKUP',
-      color: '#ff4d4d'
+      color: '#ff4d4d',
+      work: '/portfolio#packaging'
     },
     {
       id: '06',
@@ -104,7 +109,8 @@ const Services = () => {
       desc: 'Content that stops the scroll. We create platform-native, on-brand social creatives — posts, stories, reels covers, and highlight icons — sized right, looking sharp.',
       bullets: ['Instagram & Facebook posts', 'Story & reel cover frames', 'LinkedIn & Twitter banners', 'Monthly content packs'],
       footer: 'ALL PLATFORMS · ALL SIZES',
-      color: '#00f5d4'
+      color: '#00f5d4',
+      work: '/portfolio#social-media-design'
     },
     {
       id: '07',
@@ -113,7 +119,8 @@ const Services = () => {
       desc: 'High-impact posters and banners designed to command attention in any space. Event promotions, product launches, in-store displays — we make you impossible to ignore.',
       bullets: ['Event & promo posters', 'Pull-up & roll-up banners', 'Outdoor hoardings', 'Digital screen formats'],
       footer: 'A3 · A1 · CUSTOM SIZE',
-      color: '#ff4d4d'
+      color: '#ff4d4d',
+      work: '/portfolio#events'
     },
     {
       id: '08',
@@ -122,7 +129,8 @@ const Services = () => {
       desc: 'Your first physical handshake with a client. We design premium business cards and stationery that leave a lasting impression and reinforce your brand at every touchpoint.',
       bullets: ['Standard & premium cards', 'Letterheads & envelopes', 'Notepads & folders', 'Stamp & invoice designs'],
       footer: 'STANDARD · DIE-CUT · SPOT UV',
-      color: '#00f5d4'
+      color: '#00f5d4',
+      work: '/portfolio#brand-identity'
     }
   ];
 
@@ -187,6 +195,11 @@ const Services = () => {
           </motion.div>
         </div>
 
+        {/* What We Do — Digital Growth (SEO first) */}
+        <div className="mb-32">
+          <WhatWeDo />
+        </div>
+
         {/* Services deck — each card sticks and the next slides over it */}
         <div ref={stackRef} className="relative mb-32">
           <div className="flex flex-col gap-6 md:gap-8">
@@ -231,23 +244,30 @@ const Services = () => {
 
                   <div className="mt-10 pt-6 border-t border-white/10 flex items-center justify-between gap-4 flex-wrap">
                     <span className="text-[9px] font-black uppercase tracking-widest text-surface/50">{service.footer}</span>
-                    <Link
-                      to="/contact"
-                      className="inline-flex items-center gap-2 font-outfit text-[11px] font-black uppercase tracking-[0.2em] hover:gap-3 transition-all"
-                      style={{ color: service.color }}
-                    >
-                      Start This Project
-                      <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-                    </Link>
+                    <div className="flex items-center gap-6 flex-wrap">
+                      {/* Jumps to this service's chapter on the portfolio page */}
+                      <Link
+                        to={service.work}
+                        className="inline-flex items-center gap-2 font-outfit text-[11px] font-black uppercase tracking-[0.2em] text-surface/60 hover:text-surface transition-colors"
+                      >
+                        View Work
+                        <span className="material-symbols-outlined text-[16px]">arrow_outward</span>
+                      </Link>
+                      <Link
+                        to="/contact"
+                        className="inline-flex items-center gap-2 font-outfit text-[11px] font-black uppercase tracking-[0.2em] hover:gap-3 transition-all"
+                        style={{ color: service.color }}
+                      >
+                        Start This Project
+                        <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
-
-        {/* What We Do — Digital Growth */}
-        <WhatWeDo />
 
         {/* Bottom CTA Section */}
         <motion.div
@@ -259,7 +279,7 @@ const Services = () => {
           <div className="glow-outline-inner p-8 sm:p-12 flex flex-col lg:flex-row justify-between items-center gap-8">
             <div className="max-w-xl text-center lg:text-left">
               <h2 className="text-2xl sm:text-3xl text-surface mb-4 font-syne">
-                We also do <span className="text-accent">custom graphic design</span> for any brief.
+                We do <span className="text-accent">custom graphic design</span> for any brief.
               </h2>
               <p className="text-surface/60 font-inter text-[14px]">
                 Presentations · Infographics · Vehicle wraps · Event backdrops · Signage · Brand refreshes

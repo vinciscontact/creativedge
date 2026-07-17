@@ -165,8 +165,9 @@ const Contact = () => {
               <div className="space-y-stack-md">
                 <div>
                   <h3 className="font-space text-label-caps text-on-surface-variant mb-2">Get In Touch</h3>
-                  <a href="mailto:creativzedge@gmail.com" className="block font-space text-headline-md text-on-surface lowercase font-black hover:text-primary transition-colors break-all">creativzedge@gmail.com</a>
-                  <a href="mailto:designcreativzedge@gmail.com" className="block font-space text-body-lg text-on-surface-variant lowercase hover:text-primary transition-colors break-all">designcreativzedge@gmail.com</a>
+                  {/* Fluid sizes keep each address whole on one line down to 360px — addresses never split */}
+                  <a href="mailto:creativzedge@gmail.com" className="block font-space text-[clamp(1rem,4vw,1.75rem)] whitespace-nowrap text-on-surface lowercase font-black hover:text-primary transition-colors">creativzedge@gmail.com</a>
+                  <a href="mailto:designcreativzedge@gmail.com" className="block font-space text-[clamp(0.85rem,3.8vw,1.125rem)] whitespace-nowrap text-on-surface-variant lowercase hover:text-primary transition-colors">designcreativzedge@gmail.com</a>
                 </div>
 
                 <div className="pt-stack-md">

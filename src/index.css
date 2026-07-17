@@ -731,6 +731,21 @@
     box-shadow: 0 0 50px rgba(20, 255, 233, 0.2);
   }
 
+/* CTA marquee band (Home) — two copies inside, so -50% loops seamlessly */
+@keyframes cta-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.cta-marquee-inner {
+  animation: cta-marquee 32s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta-marquee-inner {
+    animation: none;
+  }
+}
+
 
 
 

@@ -39,7 +39,7 @@ const Home = () => {
       <div className="ambient-glow top-[40%] right-[20%] bg-accent opacity-5"></div>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-[140px] sm:pt-[180px] lg:pt-[220px] pb-20">
+      <section className="relative flex flex-col items-center justify-center overflow-hidden pt-[140px] sm:pt-[180px] lg:pt-[220px] pb-8">
 
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
@@ -90,7 +90,7 @@ const Home = () => {
                 </motion.span>
               </Link>
             </div>
-            <div className="mt-16 sm:mt-20 flex flex-wrap justify-center gap-10 sm:gap-16 border-t border-primary/5 pt-12 w-full">
+            <div className="mt-8 flex flex-wrap justify-center gap-10 sm:gap-16 border-t border-primary/5 pt-6 w-full">
               <div className="text-center">
                 <div className="font-outfit text-3xl font-black text-primary">5+</div>
                 <div className="font-outfit text-[10px] font-black uppercase tracking-widest text-primary">Studio Years</div>
@@ -112,7 +112,7 @@ const Home = () => {
       </section>
 
       {/* What We Do — the two sides of the studio */}
-      <section className="relative z-10 py-stack-lg">
+      <section className="relative z-10 pt-stack-sm pb-stack-lg">
         <div className="max-w-7xl mx-auto px-margin">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -175,6 +175,7 @@ const Home = () => {
 
       {/* Engagement hook */}
       <CtaHook
+        variant="band"
         eyebrow="Let's Create"
         title={
           <>
@@ -182,8 +183,8 @@ const Home = () => {
           </>
         }
         subtitle="From a single logo to a full identity system — let's build something the world remembers."
-        primary={{ label: 'Start Your Project', to: '/contact' }}
-        secondary={{ label: 'View Our Work', to: '/portfolio' }}
+        primary={{ label: 'View Our Work', to: '/portfolio' }}
+        secondary={{ label: 'Start Your Project', to: '/contact' }}
       />
     </div>
   );

@@ -63,7 +63,7 @@ const Header = () => {
               <img 
                 src={logo} 
                 alt="CREATIVZEDGE" 
-                className="h-8 sm:h-14 w-auto object-contain brightness-150 contrast-125 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" 
+                className="h-8 sm:h-14 w-auto object-contain"
               />
             </Link>
           </motion.div>
@@ -145,7 +145,7 @@ const Header = () => {
                   <Link
                     to={link.path}
                     onClick={() => setIsOpen(false)}
-                    className={`syne-title text-[clamp(1.5rem,7.5vw,2.75rem)] tracking-tight leading-tight break-words transition-all hover:text-primary ${
+                    className={`syne-title text-[clamp(1.5rem,7.5vw,2.75rem)] tracking-tight leading-tight transition-all hover:text-primary ${
                       location.pathname === link.path ? 'text-primary' : 'text-secondary/40'
                     }`}
                   >
