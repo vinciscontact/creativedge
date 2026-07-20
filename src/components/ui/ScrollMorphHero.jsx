@@ -161,7 +161,8 @@ function FlipCard({ src, label, index, scatter, phaseMv, cw, ch, morph, rotate, 
                     className="absolute inset-0 h-full w-full overflow-hidden rounded-xl shadow-lg bg-gray-200"
                     style={{ backfaceVisibility: "hidden" }}
                 >
-                    <img src={src} alt={label || `work-${index}`} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                    {/* First cards are in the initial viewport — lazy-loading them is an LCP anti-pattern */}
+                    <img src={src} alt={label || `work-${index}`} loading={index < 8 ? 'eager' : 'lazy'} decoding="async" className="h-full w-full object-cover" />
                     <div className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-transparent" />
                 </div>
 

@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Internal SEO audit deliverables — not part of the site
+creativedge-audit/

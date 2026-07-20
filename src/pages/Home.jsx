@@ -45,7 +45,8 @@ const Home = () => {
         <div className="absolute inset-0 z-0">
             <img
               src={asset('/images/hero%20background.webp')}
-              alt="Hero Background"
+              alt=""
+              fetchPriority="high"
               className="w-full h-full object-cover"
             />
             {/* Faded but visible: soft wash + top/bottom fade keeps the headline crisp */}
