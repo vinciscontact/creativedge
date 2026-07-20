@@ -36,7 +36,7 @@ const CountUpStat = ({ target, label }) => {
 
   return (
     <div className="glass p-8 flex flex-col items-center justify-center text-center">
-      <span ref={numRef} className="syne-title text-3xl md:text-4xl text-primary leading-none mb-2 flex items-center h-9 md:h-10">0+</span>
+      <span ref={numRef} className="syne-title text-3xl md:text-4xl text-primary leading-none mb-2 flex items-center h-12 md:h-14">0+</span>
       <span className="font-outfit text-[10px] font-bold uppercase tracking-[0.15em] text-on-surface-variant/70">{label}</span>
     </div>
   );
@@ -107,13 +107,15 @@ const About = () => {
           className="mb-40 grid grid-cols-2 lg:grid-cols-4 gap-px bg-primary/10 rounded-[28px] overflow-hidden border border-primary/10"
         >
           <CountUpStat target={1000} label="Projects Delivered" />
-          <div className="glass p-8 flex flex-col items-center justify-center text-center">
-            <span className="syne-title text-sm leading-tight md:text-2xl md:leading-none md:whitespace-nowrap text-center text-primary mb-2 flex items-center justify-center h-9 md:h-10">Certified Team</span>
+          {/* Text values scale to their own cell (container query) so wide Syne
+              words always fit whole — no clipping, no mid-word breaks */}
+          <div className="glass p-8 flex flex-col items-center justify-center text-center [container-type:inline-size]">
+            <span className="syne-title text-[clamp(0.8rem,9.5cqw,1.375rem)] leading-[1.1] text-primary mb-2 flex items-center justify-center h-12 md:h-14">Certified Team</span>
             <span className="font-outfit text-[10px] font-bold uppercase tracking-[0.15em] text-on-surface-variant/70">Arena Multimedia</span>
           </div>
           <CountUpStat target={15} label="Years of Experience" />
-          <div className="glass p-8 flex flex-col items-center justify-center text-center">
-            <span className="syne-title text-sm leading-tight md:text-2xl md:leading-none md:whitespace-nowrap text-center text-primary mb-2 flex items-center justify-center h-9 md:h-10">IN · UK · USA</span>
+          <div className="glass p-8 flex flex-col items-center justify-center text-center [container-type:inline-size]">
+            <span className="syne-title text-[clamp(0.8rem,9.5cqw,1.375rem)] leading-[1.1] text-primary mb-2 flex items-center justify-center h-12 md:h-14">IN · UK · USA</span>
             <span className="font-outfit text-[10px] font-bold uppercase tracking-[0.15em] text-on-surface-variant/70">Global Reach</span>
           </div>
         </motion.div>
