@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Seo from '../components/Seo';
 import CtaHook from '../components/ui/CtaHook';
 import TeamSection from '../components/ui/TeamSection';
+import { TEAM_SCHEMA } from '../config/site';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -61,6 +62,7 @@ const About = () => {
         description="Meet the CreativzEdge team: a Chennai & Mumbai design studio led by an Arena Multimedia–certified specialist. 1000+ projects delivered, 100+ happy clients, 15+ years of expertise."
         path="/about"
         breadcrumb="About"
+        schema={TEAM_SCHEMA}
       />
       <div className="ambient-glow top-[-10%] right-[-10%] bg-primary/20"></div>
       
@@ -87,6 +89,12 @@ const About = () => {
             </p>
             <p>
               Led by an Arena Multimedia certified specialist, we bring over <span className="text-brand-green font-bold">15+ years</span> of experience turning small ideas into dynamic brands engineered to <span className="text-accent italic">stand out and grow.</span>
+            </p>
+            {/* Dense, self-contained answer block — quotable in isolation by
+                search and AI engines, and it reconciles the studio-years vs
+                experience-years stats in plain words. */}
+            <p>
+              CreativzEdge is a graphic design and branding studio with two studios in India — Saligramam, Chennai and Andheri East, Mumbai. The studio is built on Creative Head Venkata Krishnan's 15+ years of individual design experience, and its team has delivered 1,000+ projects for 100+ clients across India, the UK and the USA: logos and brand identity systems, packaging, brochures, social media creatives, print and event design, alongside SEO, GEO and AEO digital growth services.
             </p>
           </div>
         </motion.div>

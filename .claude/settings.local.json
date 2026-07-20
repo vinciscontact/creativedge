@@ -160,7 +160,9 @@
       "PowerShell(node scripts/generate-seo-files.mjs)",
       "PowerShell(\"--- robots ---\")",
       "PowerShell(\"--- sitemap ---\")",
-      "PowerShell(\"--- llms head ---\")"
+      "PowerShell(\"--- llms head ---\")",
+      "PowerShell(git remote set-url origin https://vinciscontact@github.com/vinciscontact/creativedge.git)",
+      "PowerShell(npx eslint src/config/site.js src/pages/Contact.jsx src/pages/About.jsx src/pages/Home.jsx src/pages/Services.jsx src/components/ui/ContactFloat.jsx src/App.jsx)"
     ]
   }
 }

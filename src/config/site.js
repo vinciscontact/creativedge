@@ -29,11 +29,57 @@ export const LOCATIONS = {
   },
 };
 
+// Studio WhatsApp number (international format, no '+' or spaces for wa.me).
+export const WHATSAPP_NUMBER = '917299942627';
+
 export const SAME_AS = [
   'https://www.instagram.com/creativzedge_official/',
   'https://www.linkedin.com/in/b-venkata-krishnan-87954a379',
   'https://www.google.com/search?kgmid=/g/11ylpc_5bh',
 ];
+
+// Team members as independent, @id-referenceable Person entities (About page).
+// The founder node is also referenced from ORGANIZATION_SCHEMA so both
+// describe the same entity instead of two disconnected ones.
+const TEAM_PHOTO = (file) => `${SITE_URL}/images/portfolio%20projects/Our%20team/${file}`;
+export const TEAM_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${SITE_URL}/#person-venkata-krishnan`,
+      name: 'Venkata Krishnan',
+      alternateName: 'Venkat',
+      jobTitle: 'Founder / Creative Head',
+      worksFor: { '@id': `${SITE_URL}/#organization` },
+      sameAs: ['https://www.linkedin.com/in/b-venkata-krishnan-87954a379'],
+    },
+    {
+      '@type': 'Person',
+      '@id': `${SITE_URL}/#person-sivabalan`,
+      name: 'Sivabalan',
+      jobTitle: 'Creative Strategy Director',
+      image: TEAM_PHOTO('sivabalan.webp'),
+      worksFor: { '@id': `${SITE_URL}/#organization` },
+    },
+    {
+      '@type': 'Person',
+      '@id': `${SITE_URL}/#person-tryphena-corera`,
+      name: 'Tryphena Corera',
+      jobTitle: 'Lead - Visual Designer & Digital Marketing Specialist',
+      image: TEAM_PHOTO('Tryphena%20Corera.webp'),
+      worksFor: { '@id': `${SITE_URL}/#organization` },
+    },
+    {
+      '@type': 'Person',
+      '@id': `${SITE_URL}/#person-deepika`,
+      name: 'Deepika',
+      jobTitle: 'Finance / CRM',
+      image: TEAM_PHOTO('Deepika.webp'),
+      worksFor: { '@id': `${SITE_URL}/#organization` },
+    },
+  ],
+};
 
 // Site-wide entity graph: the brand, both physical studios, and the website.
 // Rendered once from App.jsx so it ships on every route (and gets baked into
@@ -55,6 +101,7 @@ export const ORGANIZATION_SCHEMA = {
       sameAs: SAME_AS,
       founder: {
         '@type': 'Person',
+        '@id': `${SITE_URL}/#person-venkata-krishnan`,
         name: 'Venkata Krishnan',
         alternateName: 'Venkat',
         jobTitle: 'Founder / Creative Head',

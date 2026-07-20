@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Seo from '../components/Seo';
+import { WHATSAPP_NUMBER } from '../config/site';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -14,9 +15,6 @@ const Contact = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
-
-  // Studio WhatsApp number (international format, no '+' or spaces for wa.me).
-  const WHATSAPP_NUMBER = '917299942627';
 
   const handleSubmit = (e) => {
     e.preventDefault();

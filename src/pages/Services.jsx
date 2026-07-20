@@ -134,6 +134,42 @@ const Services = () => {
     }
   ];
 
+  // Real buyer questions, answered with facts that already live on this site.
+  // Rendered visibly below AND mirrored exactly in FAQPage JSON-LD — the
+  // structured Q&A feeds snippet extraction and AI citation.
+  const faqs = [
+    {
+      q: 'What design services does CreativzEdge offer?',
+      a: 'CreativzEdge offers logo and brand identity design, packaging design, social media creatives, brochures and catalogues, posters and banners, menu cards, business cards and stationery, and ad campaign design — plus SEO, GEO, AEO and social media growth services.',
+    },
+    {
+      q: 'Where is CreativzEdge located?',
+      a: 'CreativzEdge has two studios in India — in Saligramam, Chennai and Andheri East, Mumbai — and works with clients across India, the UK and the USA. Projects are handled in person or remotely over WhatsApp and email.',
+    },
+    {
+      q: 'What files do I receive with a logo design project?',
+      a: 'Logo and brand identity projects are delivered in AI, SVG, PNG and PDF formats, along with a brand colour palette, typography system and a brand guidelines PDF.',
+    },
+    {
+      q: 'How do I start a project with CreativzEdge?',
+      a: 'Send your brief through the contact form — it reaches the team directly on WhatsApp — or call the Chennai studio at +91 72999 42627 or the Mumbai studio at +91 95003 40369.',
+    },
+    {
+      q: 'Does CreativzEdge also handle digital marketing?',
+      a: 'Yes. Alongside design, the studio provides SEO (search engine optimization), GEO (generative engine optimization), AEO (answer engine optimization) and social media creative packages to make brands discoverable.',
+    },
+  ];
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  };
+
   return (
     // overflow-clip (not hidden) keeps the ambient glows contained without
     // creating a scroll container, so the sticky card deck below can pin.
@@ -143,17 +179,20 @@ const Services = () => {
         description="Logo & brand identity, packaging design, social media creatives, brochures, posters, menus, business cards and ad campaigns — plus SEO/GEO/AEO digital growth. Serving Chennai, Mumbai and beyond."
         path="/services"
         breadcrumb="Services"
-        schema={services.map((s) => ({
-          '@context': 'https://schema.org',
-          '@type': 'Service',
-          serviceType: s.title,
-          description: s.desc,
-          provider: { '@id': `${SITE_URL}/#organization` },
-          areaServed: [
-            { '@type': 'City', name: 'Chennai' },
-            { '@type': 'City', name: 'Mumbai' },
-          ],
-        }))}
+        schema={[
+          ...services.map((s) => ({
+            '@context': 'https://schema.org',
+            '@type': 'Service',
+            serviceType: s.title,
+            description: s.desc,
+            provider: { '@id': `${SITE_URL}/#organization` },
+            areaServed: [
+              { '@type': 'City', name: 'Chennai' },
+              { '@type': 'City', name: 'Mumbai' },
+            ],
+          })),
+          faqSchema,
+        ]}
       />
       <div className="ambient-glow top-[-10%] left-[-10%] bg-primary/20"></div>
       <div className="ambient-glow bottom-[-10%] right-[-10%] bg-secondary/10"></div>
@@ -177,7 +216,7 @@ const Services = () => {
               Will Ever <span className="text-secondary">Need.</span>
             </h1>
             <p className="font-inter text-body-lg text-on-surface-variant leading-relaxed max-w-2xl">
-              From a single business card to a full brand identity system — we craft every touchpoint with precision, purpose, and creative edge.
+              From a single business card to a full brand identity system — we craft every touchpoint with precision, purpose, and creative edge, from our studios in Chennai and Mumbai.
             </p>
           </motion.div>
 
@@ -265,6 +304,29 @@ const Services = () => {
                   </div>
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+
+        {/* FAQ — visible text mirrors the FAQPage JSON-LD exactly */}
+        <div className="mt-32 max-w-3xl mx-auto">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="w-8 h-[2px] bg-primary"></div>
+            <span className="font-outfit text-[12px] font-black tracking-[0.4em] text-primary uppercase">FAQ</span>
+            <div className="w-8 h-[2px] bg-primary"></div>
+          </div>
+          <h2 className="syne-title text-3xl sm:text-4xl text-primary text-center mb-12">Common Questions</h2>
+          <div className="flex flex-col gap-4">
+            {faqs.map((faq) => (
+              <details key={faq.q} className="group glass-card !p-0 overflow-hidden">
+                <summary className="cursor-pointer list-none flex items-center justify-between gap-4 p-6">
+                  <span className="font-outfit text-sm sm:text-base font-black text-primary">{faq.q}</span>
+                  <span className="material-symbols-outlined text-primary/50 transition-transform duration-300 group-open:rotate-180 shrink-0">
+                    expand_more
+                  </span>
+                </summary>
+                <p className="font-inter text-[15px] text-on-surface-variant leading-relaxed px-6 pb-6">{faq.a}</p>
+              </details>
             ))}
           </div>
         </div>

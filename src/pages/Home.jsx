@@ -69,7 +69,7 @@ const Home = () => {
                 <span className="text-gradient">Atmosphere</span>
               </h1>
               <p className="font-inter text-base sm:text-body-lg text-primary font-medium max-w-xl mx-auto mb-12 leading-relaxed">
-                We deliver bold, brand-focused graphic solutions that make your message stand out. High-fidelity design backed by over a decade of industry expertise.
+                We deliver bold, brand-focused graphic solutions that make your message stand out — crafted in our Chennai &amp; Mumbai studios and backed by over a decade of industry expertise.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center w-full">
