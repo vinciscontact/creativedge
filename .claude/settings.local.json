@@ -82,7 +82,9 @@
       "PowerShell(npx eslint src/components/ui/TeamSection.jsx src/pages/About.jsx src/pages/Portfolio.jsx src/components/Header.jsx)",
       "PowerShell(npx eslint src/pages/Contact.jsx)",
       "PowerShell(npx eslint src/pages/Services.jsx src/pages/Portfolio.jsx)",
-      "PowerShell(npx eslint src/pages/Portfolio.jsx)"
+      "PowerShell(npx eslint src/pages/Portfolio.jsx)",
+      "PowerShell(node -e \"const s=require\\('sharp'\\); s\\('src/assets/logo.png'\\).metadata\\(\\).then\\(m => console.log\\(m.width, m.height, m.format, m.hasAlpha\\)\\)\")",
+      "PowerShell(Remove-Item public\\\\favicon.svg -Confirm:$false)"
     ]
   }
 }
