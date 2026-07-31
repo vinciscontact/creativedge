@@ -66,7 +66,7 @@ export const TEAM_SCHEMA = {
       '@type': 'Person',
       '@id': `${SITE_URL}/#person-tryphena-corera`,
       name: 'Tryphena Corera',
-      jobTitle: 'Lead - Visual Designer & Digital Marketing Specialist',
+      jobTitle: 'Design Partner - Visual Designer & Digital Marketing Specialist',
       image: TEAM_PHOTO('Tryphena%20Corera.webp'),
       worksFor: { '@id': `${SITE_URL}/#organization` },
     },

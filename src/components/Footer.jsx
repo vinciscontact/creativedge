@@ -65,6 +65,9 @@ const Footer = () => {
           <Link to="/privacy" className="text-[10px] uppercase tracking-widest text-surface/50 hover:text-accent transition-all">Privacy Policy</Link>
           <Link to="/terms" className="text-[10px] uppercase tracking-widest text-surface/50 hover:text-accent transition-all">Terms &amp; Conditions</Link>
         </div>
+        <p className="font-outfit text-[10px] text-surface/50 uppercase tracking-widest">
+          Designed by <span className="text-accent/80">TheVincis</span>
+        </p>
       </div>
     </footer>
   );

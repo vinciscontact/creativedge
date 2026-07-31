@@ -33,16 +33,15 @@ const MEMBERS = [
     role: 'Creative Head',
     company: 'CreativzEdge',
   },
-  {
-    group: 'Creative Team',
-    imgSrc: asset('/images/portfolio%20projects/Our%20team/Tryphena%20Corera.webp'),
-    name: 'Tryphena Corera',
-    role: 'Lead - Visual Designer & Digital Marketing Specialist',
-    logo: asset('/images/portfolio%20projects/Our%20team/TC%20BG.webp'),
-  },
 ];
 
 const PARTNERS = [
+  {
+    name: 'Tryphena Corera',
+    tag: 'Design Partner',
+    desc: 'Design partner uniting sharp visual identity with growth-led digital marketing — shaping brand visuals and campaigns that don’t just look striking, but move the numbers.',
+    logo: asset('/images/portfolio%20projects/Our%20team/TC%20BG.webp'),
+  },
   {
     name: 'VJM Technologies',
     tag: 'Technology Partner',
@@ -219,15 +218,25 @@ const TeamSection = () => {
           </div>
         </div>
 
-        {/* Strategic partners — companies, not people, so plain text cards below the list */}
+        {/* Strategic partners — text cards below the list; a partner with a
+            personal logo gets it as a light chip so it reads on the dark band */}
         <div className="mt-20 md:mt-28">
           <div className="team-reveal flex items-center gap-4 mb-8">
             <span className="font-outfit text-[11px] font-black tracking-[0.4em] uppercase text-accent">Strategic Partners</span>
             <div className="flex-1 h-[1px] bg-surface/10"></div>
           </div>
-          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
             {PARTNERS.map((partner) => (
               <div key={partner.name} className="team-reveal min-w-0 rounded-[24px] border border-surface/10 bg-surface/[0.03] p-8 md:p-10 [container-type:inline-size]">
+                {partner.logo && (
+                  <img
+                    src={partner.logo}
+                    alt={`${partner.name} logo`}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-14 h-14 rounded-xl bg-white object-contain mb-5"
+                  />
+                )}
                 {/* Syne is ~13.4x font-size for "Technologies"; 7.2cqw guarantees the longest
                     word always fits its card whole at any width — words are never split */}
                 <h3 className="syne-title text-[clamp(1.05rem,7.2cqw,1.875rem)] text-surface">{partner.name}</h3>

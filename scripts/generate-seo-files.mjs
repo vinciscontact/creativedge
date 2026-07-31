@@ -100,11 +100,11 @@ AI answer engines.
 ## Team
 - Venkata Krishnan — Creative Head, Arena Multimedia certified
 - Sivabalan — Creative Strategy Director
-- Tryphena Corera — Lead, Visual Designer & Digital Marketing Specialist
 - Deepika — Finance / CRM
 - Venkat — Strategic Advisor (cations.digital)
 
 ## Strategic Partners
+- Tryphena Corera — Design partner; visual design & digital marketing
 - Cations Digital Pvt. Ltd. — Digital marketing agency, Mumbai; SEO, PPC, SMO, web design & development; 1000+ clients supported
 - VJM Technologies — Technology partner, website support
 - TheVincis — Engineering partner, Microsoft & Infosys certified

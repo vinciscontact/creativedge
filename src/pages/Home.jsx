@@ -39,7 +39,9 @@ const Home = () => {
       <div className="ambient-glow top-[40%] right-[20%] bg-accent opacity-5"></div>
 
       {/* Hero Section */}
-      <section className="relative flex flex-col items-center justify-center overflow-hidden pt-[140px] sm:pt-[180px] lg:pt-[220px] pb-8">
+      {/* min-h-[100svh]: the hero owns the first screen — the next section starts
+          below the fold. svh so mobile browser chrome doesn't cause overflow. */}
+      <section className="relative flex flex-col items-center justify-center overflow-hidden min-h-[100svh] pt-[140px] sm:pt-[180px] lg:pt-[220px] pb-8">
 
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
@@ -54,7 +56,7 @@ const Home = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-background via-background/25 to-background"></div>
           </div>
   
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-margin relative z-10 text-center flex flex-col items-center">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-margin relative z-10 text-center flex flex-col items-center [container-type:inline-size]">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -64,7 +66,9 @@ const Home = () => {
               <span className="font-outfit text-[10px] sm:text-[12px] font-black tracking-[0.3em] sm:tracking-[0.4em] text-secondary uppercase mb-6 block">
                 15+ Years of Design Excellence
               </span>
-              <h1 className="syne-title text-[clamp(1.75rem,9vw,6rem)] leading-[0.9] text-primary mb-10 tracking-tight w-full whitespace-nowrap">
+              {/* Syne at tracking-tight is ~11.8x font-size for "Atmosphere"; 8cqw keeps the
+                  word inside the container at every width — it was clipping on mid-size screens */}
+              <h1 className="syne-title text-[clamp(1.5rem,8cqw,6rem)] leading-[0.9] text-primary mb-10 tracking-tight w-full whitespace-nowrap">
                 Future <br />
                 <span className="text-gradient">Atmosphere</span>
               </h1>
