@@ -100,6 +100,7 @@ AI answer engines.
 ## Team
 - Venkata Krishnan — Creative Head, Arena Multimedia certified
 - Sivabalan — Creative Strategy Director
+- Tryphena Corera — Lead, Visual Designer & Digital Marketing Specialist
 - Deepika — Finance / CRM
 - Venkat — Strategic Advisor (cations.digital)
 

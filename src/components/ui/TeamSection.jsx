@@ -33,6 +33,13 @@ const MEMBERS = [
     role: 'Creative Head',
     company: 'CreativzEdge',
   },
+  {
+    group: 'Creative Team',
+    imgSrc: asset('/images/portfolio%20projects/Our%20team/Tryphena%20Corera.webp'),
+    name: 'Tryphena Corera',
+    role: 'Lead - Visual Designer & Digital Marketing Specialist',
+    logo: asset('/images/portfolio%20projects/Our%20team/TC%20BG.webp'),
+  },
 ];
 
 const PARTNERS = [
