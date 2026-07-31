@@ -44,9 +44,7 @@ async function findBrowser() {
   for (const p of CHROME_PATHS) {
     try { await access(p); return p; } catch { /* keep looking */ }
   }
-  throw new Error(
-    'No Chrome/Edge found for prerendering. Install Chrome or set PUPPETEER_EXECUTABLE_PATH.'
-  );
+  return null;
 }
 
 function serveDist(shell) {
@@ -71,9 +69,23 @@ function serveDist(shell) {
   return new Promise((resolve) => server.listen(PORT, () => resolve(server)));
 }
 
+// Fail-soft when the build environment has no Chrome (e.g. Vercel's build
+// container): ship the plain SPA instead of failing the whole deployment.
+// Environments with Chrome (local, GitHub Actions) still get full prerender;
+// set PRERENDER_REQUIRE=1 to make a missing browser fail the build again.
+const executablePath = await findBrowser();
+if (!executablePath) {
+  const msg =
+    'No Chrome/Edge found for prerendering. Install Chrome or set PUPPETEER_EXECUTABLE_PATH.';
+  if (process.env.PRERENDER_REQUIRE) throw new Error(msg);
+  console.warn(`[prerender] SKIPPED — ${msg}`);
+  console.warn('[prerender] Deploying the SPA without per-route static HTML.');
+  process.exit(0);
+}
+
 const shell = await readFile(join(DIST, 'index.html'));
 const server = await serveDist(shell);
-const browser = await puppeteer.launch({ executablePath: await findBrowser(), headless: true });
+const browser = await puppeteer.launch({ executablePath, headless: true });
 
 try {
   const page = await browser.newPage();
