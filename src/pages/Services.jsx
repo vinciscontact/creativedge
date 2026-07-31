@@ -198,40 +198,44 @@ const Services = () => {
       <div className="ambient-glow bottom-[-10%] right-[-10%] bg-secondary/10"></div>
 
       <section className="max-w-7xl mx-auto px-margin relative z-10">
-        {/* Header Section */}
-        <div className="flex flex-col items-center text-center mb-16 gap-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="w-full flex flex-col items-center"
-          >
-            <div className="flex items-center justify-center gap-3 mb-6">
+        {/* Header Section — fills the first screen (viewport minus the wrapper's
+            220px top padding) so Digital Growth starts below the fold */}
+        {/* pb-28 skews the vertical centering upward — the wrapper's 220px top
+            padding otherwise makes the content sit visually low in the screen */}
+        <div className="flex flex-col items-center justify-center text-center mb-16 gap-8 min-h-[calc(100svh-260px)] pb-28">
+          {/* CSS-only kinetic typography: each word drifts up and sharpens
+              from a blur, cascading left to right (see .kt-* in index.css) */}
+          <div className="w-full flex flex-col items-center">
+            <div className="flex items-center justify-center gap-3 mb-6 kt-fade">
               <div className="w-8 h-[2px] bg-primary"></div>
               <span className="font-outfit text-[12px] font-black tracking-[0.4em] text-primary uppercase">Our Services</span>
               <div className="w-8 h-[2px] bg-primary"></div>
             </div>
             <h1 className="syne-title text-[clamp(2rem,5.5vw,4rem)] text-primary mb-6 leading-[1.1] text-balance">
-              Every Visual Your Brand <br className="hidden sm:block" />
-              Will Ever <span className="text-secondary">Need.</span>
+              <span className="kt-word" style={{ animationDelay: '0.05s' }}>Every</span>{' '}
+              <span className="kt-word" style={{ animationDelay: '0.13s' }}>Visual</span>{' '}
+              <span className="kt-word" style={{ animationDelay: '0.21s' }}>Your</span>{' '}
+              <span className="kt-word" style={{ animationDelay: '0.29s' }}>Brand</span>
+              <br className="hidden sm:block" />{' '}
+              <span className="kt-word" style={{ animationDelay: '0.37s' }}>Will</span>{' '}
+              <span className="kt-word" style={{ animationDelay: '0.45s' }}>Ever</span>{' '}
+              <span className="kt-word text-secondary" style={{ animationDelay: '0.53s' }}>Need.</span>
             </h1>
-            <p className="font-inter text-body-lg text-on-surface-variant leading-relaxed max-w-2xl">
+            <p className="font-inter text-body-lg text-on-surface-variant leading-relaxed max-w-2xl kt-fade" style={{ animationDelay: '0.65s' }}>
               From a single business card to a full brand identity system — we craft every touchpoint with precision, purpose, and creative edge, from our studios in Chennai and Mumbai.
             </p>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="flex flex-col items-center gap-3"
+          <div
+            className="flex flex-col items-center gap-3 kt-pop"
+            style={{ animationDelay: '0.85s' }}
           >
             <div className="glass px-6 py-3 rounded-full border border-secondary/20 flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
               <span className="font-outfit text-[11px] font-black uppercase tracking-widest text-secondary">Currently taking new projects</span>
             </div>
             <p className="font-inter text-[13px] text-on-surface-variant/60">Graphic design + 8 specialist services</p>
-          </motion.div>
+          </div>
         </div>
 
         {/* What We Do — Digital Growth (SEO first) */}

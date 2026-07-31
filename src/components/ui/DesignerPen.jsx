@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import EdgeChat from './EdgeChat';
 
 // Quick-nav destinations shown when the pen is tapped.
 const PAGES = [
@@ -23,6 +24,7 @@ const MESSAGES = [
 const DesignerPen = () => {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const [bubbleOpen, setBubbleOpen] = useState(false);
   const [msgIndex, setMsgIndex] = useState(0);
 
@@ -45,7 +47,7 @@ const DesignerPen = () => {
   // Pop a fresh message as the visitor scrolls (throttled so it never nags).
   useEffect(() => {
     const onScroll = () => {
-      if (menuOpen) return;
+      if (menuOpen || chatOpen) return;
       const now = Date.now();
       if (now - lastShownRef.current < 9000) return;
       lastShownRef.current = now;
@@ -58,17 +60,29 @@ const DesignerPen = () => {
 
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, [menuOpen]);
+  }, [menuOpen, chatOpen]);
 
   // Close the menu whenever the route changes (reset transient UI to the new route).
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMenuOpen(false);
+    setChatOpen(false);
   }, [location.pathname]);
 
   const toggleMenu = () => {
     setBubbleOpen(false);
+    // Pen acts as the chat's close button while the chat is open.
+    if (chatOpen) {
+      setChatOpen(false);
+      return;
+    }
     setMenuOpen((o) => !o);
+  };
+
+  const openChat = () => {
+    setMenuOpen(false);
+    setBubbleOpen(false);
+    setChatOpen(true);
   };
 
   const msg = MESSAGES[msgIndex];
@@ -85,7 +99,18 @@ const DesignerPen = () => {
             transition={{ type: 'spring', stiffness: 320, damping: 26 }}
             className="glass rounded-3xl p-2.5 shadow-2xl border border-primary/10 w-56 origin-bottom-right"
           >
-            <div className="px-3 py-2 mb-1">
+            {/* Chatbot entry — sits above the nav links as its own action */}
+            <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}>
+              <button
+                onClick={openChat}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-accent/15 hover:bg-accent/30 transition-all font-outfit text-[13px] font-bold text-primary"
+              >
+                <span className="material-symbols-outlined text-[18px] text-accent">forum</span>
+                Chat with Edge
+                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+              </button>
+            </motion.div>
+            <div className="px-3 py-2 mb-1 mt-1">
               <p className="font-outfit text-[10px] font-black tracking-[0.25em] text-accent uppercase">Jump to</p>
             </div>
             {PAGES.map((page, i) => {
@@ -118,9 +143,12 @@ const DesignerPen = () => {
         )}
       </AnimatePresence>
 
+      {/* Chat panel */}
+      <EdgeChat open={chatOpen && !menuOpen} onClose={() => setChatOpen(false)} />
+
       {/* Speech bubble */}
       <AnimatePresence>
-        {bubbleOpen && !menuOpen && (
+        {bubbleOpen && !menuOpen && !chatOpen && (
           <motion.div
             initial={{ opacity: 0, y: 12, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -155,23 +183,23 @@ const DesignerPen = () => {
       {/* The pen button */}
       <motion.button
         onClick={toggleMenu}
-        aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
+        aria-label={chatOpen ? 'Close chat' : menuOpen ? 'Close navigation' : 'Open navigation'}
         whileTap={{ scale: 0.9 }}
-        animate={menuOpen ? { y: 0 } : { y: [0, -6, 0] }}
-        transition={menuOpen ? {} : { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+        animate={menuOpen || chatOpen ? { y: 0 } : { y: [0, -6, 0] }}
+        transition={menuOpen || chatOpen ? {} : { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
         className="relative w-14 h-14 rounded-full bg-accent text-primary shadow-[0_10px_30px_rgba(197,168,128,0.45)] flex items-center justify-center group"
       >
         {/* Pulsing ring (hidden once interacted) */}
-        {!menuOpen && (
+        {!menuOpen && !chatOpen && (
           <span className="absolute inset-0 rounded-full bg-accent/40 animate-ping"></span>
         )}
         <motion.span
-          animate={{ rotate: menuOpen ? 90 : 0 }}
+          animate={{ rotate: menuOpen || chatOpen ? 90 : 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           className="material-symbols-outlined text-[26px] relative z-10"
-          style={{ transform: menuOpen ? 'none' : 'rotate(-12deg)' }}
+          style={{ transform: menuOpen || chatOpen ? 'none' : 'rotate(-12deg)' }}
         >
-          {menuOpen ? 'close' : 'ink_pen'}
+          {menuOpen || chatOpen ? 'close' : 'ink_pen'}
         </motion.span>
       </motion.button>
     </div>

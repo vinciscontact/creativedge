@@ -43,16 +43,17 @@ const Contact = () => {
         breadcrumb="Contact"
       />
       <section className="max-w-7xl mx-auto px-margin pt-[220px] pb-stack-lg">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-stack-lg"
-        >
-          <h1 className="font-space text-hero-900 text-on-surface uppercase tracking-tighter font-black">
-            Contact<br /><span className="text-primary">Studio</span>
+        {/* CSS-only kinetic typography: the two lines slide in from opposite
+            sides, then the rule draws itself (see .kt-* in index.css) */}
+        <div className="mb-stack-lg">
+          {/* text-hero-900 / font-space were never defined in the theme, so this
+              heading silently rendered at body size — sized for real here */}
+          <h1 className="syne-title text-[clamp(2.5rem,9vw,7rem)] leading-[0.95] text-on-surface uppercase tracking-tighter">
+            <span className="kt-slide-l" style={{ animationDelay: '0.05s' }}>Contact</span>
+            <span className="kt-slide-r text-primary" style={{ animationDelay: '0.2s' }}>Studio</span>
           </h1>
-          <div className="h-1 w-24 bg-secondary mt-stack-sm shadow-[0_0_15px_#00e475]"></div>
-        </motion.div>
+          <div className="h-1 w-24 bg-secondary mt-stack-sm shadow-[0_0_15px_#00e475] kt-grow-l" style={{ animationDelay: '0.55s' }}></div>
+        </div>
 
         <div className="flex flex-col lg:flex-row gap-gutter">
           {/* Form Side */}

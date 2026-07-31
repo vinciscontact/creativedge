@@ -67,37 +67,42 @@ const About = () => {
       <div className="ambient-glow top-[-10%] right-[-10%] bg-primary/20"></div>
       
       <section className="max-w-7xl mx-auto px-margin relative z-10">
-        {/* Hero — single statement, merged studio story */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
-        >
+        {/* Hero — single statement, merged studio story. CSS-only kinetic
+            typography: lines rise out of a mask, rules draw outward, story
+            paragraphs fade up in sequence (see .kt-* in index.css). */}
+        <div className="text-center mb-20">
           <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-8 h-[2px] bg-brand-maroon/70"></div>
-            <span className="font-outfit text-[12px] font-black tracking-[0.4em] text-primary uppercase">The Creative Edge</span>
-            <div className="w-8 h-[2px] bg-brand-green/70"></div>
+            <div className="w-8 h-[2px] bg-brand-maroon/70 kt-grow-r"></div>
+            <span className="font-outfit text-[12px] font-black tracking-[0.4em] text-primary uppercase kt-fade">The Creative Edge</span>
+            <div className="w-8 h-[2px] bg-brand-green/70 kt-grow-l"></div>
           </div>
           <h1 className="syne-title text-[clamp(1.75rem,7vw,5.5rem)] text-primary mb-10 leading-[1]">
-            Design That <span className="text-brand-maroon">Sells.</span> <br />
-            Engineering That <span className="text-brand-green">Scales.</span>
+            <span className="kt-mask">
+              <span className="kt-rise" style={{ animationDelay: '0.15s' }}>
+                Design That <span className="text-brand-maroon">Sells.</span>
+              </span>
+            </span>
+            <span className="kt-mask">
+              <span className="kt-rise" style={{ animationDelay: '0.3s' }}>
+                Engineering That <span className="text-brand-green">Scales.</span>
+              </span>
+            </span>
           </h1>
           <div className="max-w-3xl mx-auto space-y-5 font-inter text-body-lg text-on-surface-variant leading-relaxed">
-            <p>
+            <p className="kt-fade" style={{ animationDelay: '0.55s' }}>
               We don't just make things look good — we make them perform. CreativzEdge sits at the intersection of elite aesthetics and aggressive marketing strategy, architecting digital atmospheres that turn visitors into advocates.
             </p>
-            <p>
+            <p className="kt-fade" style={{ animationDelay: '0.7s' }}>
               Led by an Arena Multimedia certified specialist, we bring over <span className="text-brand-green font-bold">15+ years</span> of experience turning small ideas into dynamic brands engineered to <span className="text-accent italic">stand out and grow.</span>
             </p>
             {/* Dense, self-contained answer block — quotable in isolation by
                 search and AI engines, and it reconciles the studio-years vs
                 experience-years stats in plain words. */}
-            <p>
+            <p className="kt-fade" style={{ animationDelay: '0.85s' }}>
               CreativzEdge is a graphic design and branding studio with two studios in India — Saligramam, Chennai and Andheri East, Mumbai. The studio is built on Creative Head Venkata Krishnan's 15+ years of individual design experience, and its team has delivered 1,000+ projects for 100+ clients across India, the UK and the USA: logos and brand identity systems, packaging, brochures, social media creatives, print and event design, alongside SEO, GEO and AEO digital growth services.
             </p>
           </div>
-        </motion.div>
+        </div>
 
         {/* Animated Stat Strip */}
         <motion.div

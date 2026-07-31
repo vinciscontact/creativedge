@@ -746,6 +746,97 @@
   }
 }
 
+/* ===== Kinetic-typography heroes (About / Services / Contact) ===========
+   CSS-only so they run before hydration and add zero JS weight. Only
+   transform / opacity / filter are animated (all compositor-friendly),
+   and every animation plays once on page load. */
+
+/* About — headline lines rise out of a clipping mask. The padding/margin
+   pair gives descenders room inside the clip at leading-[1]. */
+.kt-mask {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.1em;
+  margin-block: -0.1em;
+}
+.kt-rise {
+  display: block;
+  transform: translateY(115%);
+  animation: kt-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes kt-rise {
+  to { transform: translateY(0); }
+}
+
+/* Services — words drift up and sharpen from a blur, cascading by delay */
+.kt-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.35em);
+  filter: blur(10px);
+  animation: kt-word 0.7s ease-out forwards;
+}
+@keyframes kt-word {
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+/* Contact — the two headline lines slide in from opposite sides */
+.kt-slide-l,
+.kt-slide-r {
+  display: block;
+  opacity: 0;
+  animation: kt-slide 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.kt-slide-l { transform: translateX(-0.6em); }
+.kt-slide-r { transform: translateX(0.6em); }
+@keyframes kt-slide {
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Shared helpers — soft fade-up, badge pop, self-drawing rule lines */
+.kt-fade {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: kt-fade 0.8s ease-out forwards;
+}
+@keyframes kt-fade {
+  to { opacity: 1; transform: translateY(0); }
+}
+.kt-pop {
+  opacity: 0;
+  transform: scale(0.92);
+  animation: kt-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes kt-pop {
+  to { opacity: 1; transform: scale(1); }
+}
+.kt-grow-l,
+.kt-grow-r {
+  transform: scaleX(0);
+  animation: kt-grow 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.kt-grow-l { transform-origin: left center; }
+.kt-grow-r { transform-origin: right center; }
+@keyframes kt-grow {
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kt-rise,
+  .kt-word,
+  .kt-slide-l,
+  .kt-slide-r,
+  .kt-fade,
+  .kt-pop,
+  .kt-grow-l,
+  .kt-grow-r {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
 
 
 
