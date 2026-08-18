@@ -1,76 +1,128 @@
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import { LOCATIONS } from '../config/site';
 
-const Footer = () => {
-  return (
-    <footer className="relative z-10 border-t border-surface/5 bg-primary pt-20 pb-10">
-      <div className="max-w-7xl mx-auto px-margin flex flex-col md:flex-row flex-wrap gap-12">
-        <div className="w-full md:w-[calc(50%-24px)] flex-1 min-w-[280px]">
-          {/* Using a filter to invert the logo color if it's dark, or assume logo is already fine */}
-          <img src={logo} alt="CREATIVZEDGE" className="h-16 w-auto object-contain mb-6 filter invert opacity-80" />
-          <p className="text-surface/70 font-inter max-w-sm leading-relaxed">
-            Pioneering the intersection of artistic expression and high-fidelity technical performance. Built for those who demand the extraordinary.
-          </p>
+// Sourced from the site config so the footer can't drift from the schema data.
+const CONTACT_EMAIL = LOCATIONS.chennai.email;
+
+const STUDIO_LINKS = [
+  { label: 'Vision', to: '/about' },
+  { label: 'Expertise', to: '/services' },
+  { label: 'Our Work', to: '/portfolio' },
+];
+
+const CONNECT_LINKS = [
+  { label: 'Instagram', href: 'https://www.instagram.com/creativzedge_official/' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/b-venkata-krishnan-87954a379' },
+  {
+    label: 'Google Reviews',
+    href: 'https://www.google.com/search?kgmid=/g/11ylpc_5bh&hl=en-IN&q=Creativzedge#lrd=0x3a5267556e16bb0b:0x71872bfe942c800,1',
+  },
+];
+
+const LEGAL_LINKS = [
+  { label: 'Privacy Policy', to: '/privacy' },
+  { label: 'Terms & Conditions', to: '/terms' },
+];
+
+const ColumnHeading = ({ children }) => (
+  <h4 className="font-outfit text-[11px] font-black uppercase tracking-[0.3em] text-accent mb-6">{children}</h4>
+);
+
+// One shared link treatment: the label shifts a touch on hover so the whole
+// footer responds the same way rather than each column inventing its own.
+const linkClass =
+  'inline-block font-inter text-[14px] text-surface/60 hover:text-surface hover:translate-x-1 transition-all duration-300';
+
+const Footer = () => (
+  <footer className="relative z-10 bg-primary overflow-hidden">
+    <div className="ambient-glow bottom-[-40%] left-[-5%] bg-accent opacity-[0.07]"></div>
+
+    <div className="relative z-10 max-w-7xl mx-auto px-margin">
+      {/* Statement — the footer's own voice, kept short so the longest word
+          always fits whole however narrow the screen gets */}
+      <div className="pt-24 sm:pt-32 pb-16">
+        <div className="flex items-center gap-3 mb-7">
+          <div className="w-8 h-[1px] bg-accent/40"></div>
+          <span className="font-outfit text-[11px] font-black tracking-[0.4em] uppercase text-accent">Say Hello</span>
         </div>
-        <div className="w-full md:flex-1 min-w-[150px]">
-          <h4 className="font-outfit text-[12px] font-black uppercase tracking-[0.2em] text-accent mb-6">STUDIO</h4>
-          <ul className="space-y-4 font-inter text-[14px] text-surface/60">
-            <li><Link to="/about" className="hover:text-accent transition-colors">Vision</Link></li>
-            <li><Link to="/services" className="hover:text-accent transition-colors">Expertise</Link></li>
-            <li><Link to="/portfolio" className="hover:text-accent transition-colors">Our Work</Link></li>
-          </ul>
-        </div>
-        <div className="w-full md:flex-1 min-w-[150px]">
-          <h4 className="font-outfit text-[12px] font-black uppercase tracking-[0.2em] text-accent mb-6">CONNECT</h4>
-          <ul className="space-y-4 font-inter text-[14px] text-surface/60">
-            <li>
-              <a
-                href="https://www.instagram.com/creativzedge_official/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-accent transition-colors"
-              >
-                Instagram
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://www.linkedin.com/in/b-venkata-krishnan-87954a379"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-accent transition-colors"
-              >
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://www.google.com/search?kgmid=/g/11ylpc_5bh&hl=en-IN&q=Creativzedge#lrd=0x3a5267556e16bb0b:0x71872bfe942c800,1"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-accent transition-colors"
-              >
-                Google Reviews
-              </a>
-            </li>
-            <li><Link to="/contact" className="hover:text-accent transition-colors">Initiate Project</Link></li>
-          </ul>
-        </div>
-      </div>
-      <div className="max-w-7xl mx-auto px-margin mt-20 pt-10 border-t border-surface/10 flex flex-col md:flex-row justify-between items-center gap-6">
-        <p className="font-outfit text-[10px] text-surface/50 uppercase tracking-widest opacity-50">
-          © {new Date().getFullYear()} CREATIVZEDGE STUDIO. ELEVATING DIGITAL REALITY.
+        <h2 className="syne-title text-[clamp(2.75rem,11vw,7rem)] leading-[0.88] text-surface">
+          Let&apos;s <span className="text-gradient">talk.</span>
+        </h2>
+
+        <a
+          href={`mailto:${CONTACT_EMAIL}`}
+          className="group inline-flex items-center gap-4 mt-10 text-surface hover:text-accent transition-colors"
+        >
+          <span className="font-inter text-base sm:text-xl md:text-2xl break-keep">{CONTACT_EMAIL}</span>
+          <span
+            aria-hidden="true"
+            className="material-symbols-outlined text-[22px] group-hover:translate-x-1.5 transition-transform duration-300"
+          >
+            arrow_forward
+          </span>
+        </a>
+
+        <p className="font-outfit text-[11px] tracking-[0.3em] uppercase text-surface/40 mt-6">
+          Chennai <span className="text-accent/50">&middot;</span> Mumbai
         </p>
-        <div className="flex gap-10">
-          <Link to="/privacy" className="text-[10px] uppercase tracking-widest text-surface/50 hover:text-accent transition-all">Privacy Policy</Link>
-          <Link to="/terms" className="text-[10px] uppercase tracking-widest text-surface/50 hover:text-accent transition-all">Terms &amp; Conditions</Link>
-        </div>
-        <p className="font-outfit text-[10px] text-surface/50 uppercase tracking-widest">
+      </div>
+
+      {/* Link columns */}
+      <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 border-t border-surface/10 pt-14 pb-16">
+        <nav aria-label="Studio">
+          <ColumnHeading>Studio</ColumnHeading>
+          <ul className="space-y-4">
+            {STUDIO_LINKS.map((link) => (
+              <li key={link.label}>
+                <Link to={link.to} className={linkClass}>{link.label}</Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <nav aria-label="Connect">
+          <ColumnHeading>Connect</ColumnHeading>
+          <ul className="space-y-4">
+            {CONNECT_LINKS.map((link) => (
+              <li key={link.label}>
+                <a href={link.href} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                  {link.label}
+                </a>
+              </li>
+            ))}
+            <li>
+              <Link to="/contact" className={linkClass}>Initiate Project</Link>
+            </li>
+          </ul>
+        </nav>
+
+        <nav aria-label="Legal">
+          <ColumnHeading>Legal</ColumnHeading>
+          <ul className="space-y-4">
+            {LEGAL_LINKS.map((link) => (
+              <li key={link.label}>
+                <Link to={link.to} className={linkClass}>{link.label}</Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+
+      {/* Bottom bar — mark, copyright, credit */}
+      <div className="border-t border-surface/10 py-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <Link to="/" aria-label="CreativzEdge home" className="inline-flex bg-surface rounded-xl px-4 py-2.5 shrink-0">
+          <img src={logo} alt="CREATIVZEDGE" className="h-9 w-auto object-contain" />
+        </Link>
+        <p className="font-outfit text-[10px] text-surface/40 uppercase tracking-[0.2em] text-center">
+          &copy; {new Date().getFullYear()} CreativzEdge Studio. Elevating digital reality.
+        </p>
+        <p className="font-outfit text-[10px] text-surface/40 uppercase tracking-[0.2em]">
           Designed by <span className="text-accent/80">TheVincis</span>
         </p>
       </div>
-    </footer>
-  );
-};
+    </div>
+  </footer>
+);
 
 export default Footer;

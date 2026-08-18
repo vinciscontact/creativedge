@@ -1,11 +1,48 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../assets/logo.png';
 
+// Below this scroll offset the header always stays visible.
+const REVEAL_ZONE = 140;
+// Minimum px of travel before a direction change counts, so trackpad jitter
+// and iOS rubber-banding don't flicker the header.
+const SCROLL_THRESHOLD = 6;
+// Scroll offset at which the backdrop scrim fades in behind the pills.
+const SCRIM_OFFSET = 24;
+
 const Header = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  // Auto-hide: the header slides away while reading down the page so content
+  // never scrolls through the gaps between the pills, and returns on scroll up.
+  const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  // Re-subscribed per route so a navigation always re-baselines from the real
+  // scroll position and reveals the header, however the new page enters.
+  useEffect(() => {
+    let previous = window.scrollY;
+
+    const evaluate = (force) => {
+      const latest = window.scrollY;
+      const delta = latest - previous;
+
+      setScrolled(latest > SCRIM_OFFSET);
+
+      if (force || latest <= REVEAL_ZONE || delta < -SCROLL_THRESHOLD) setHidden(false);
+      else if (delta > SCROLL_THRESHOLD) setHidden(true);
+
+      // Only advance the reference point once the move was big enough to act
+      // on, otherwise a slow drag never accumulates past the threshold.
+      if (force || Math.abs(delta) > SCROLL_THRESHOLD) previous = latest;
+    };
+
+    const onScroll = () => evaluate(false);
+
+    evaluate(true);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [location.pathname]);
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -16,7 +53,20 @@ const Header = () => {
 
   return (
     <>
-      <div className="fixed top-4 sm:top-6 left-0 w-full z-50 px-4 sm:px-margin pointer-events-none">
+      <header
+        className={`fixed top-4 sm:top-6 left-0 w-full z-50 px-4 sm:px-margin pointer-events-none transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+          hidden && !isOpen ? '-translate-y-[180%]' : 'translate-y-0'
+        }`}
+      >
+        {/* Full-bleed backdrop. Only fades in once scrolled, so the hero keeps
+            its edge-to-edge look while the header floats over it at the top. */}
+        <div
+          aria-hidden="true"
+          className={`absolute inset-x-0 -top-4 sm:-top-6 -bottom-4 sm:-bottom-6 -z-10 bg-background/85 backdrop-blur-xl border-b border-primary/5 transition-opacity duration-300 ${
+            scrolled ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+
         <div className="max-w-7xl mx-auto relative flex justify-between items-center h-20 sm:h-24">
           
           {/* Background Connecting Lines (The Constellation) - Hidden on mobile */}
@@ -41,12 +91,14 @@ const Header = () => {
                 transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
               />
               <motion.circle 
-                r="2" fill="var(--color-primary)"
+                r="2" cy={48} fill="var(--color-primary)"
+                initial={{ cx: 200, opacity: 0 }}
                 animate={{ cx: [200, 460], opacity: [0, 1, 0] }}
                 transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
               />
               <motion.circle 
-                r="2" fill="var(--color-secondary)"
+                r="2" cy={48} fill="var(--color-secondary)"
+                initial={{ cx: 840, opacity: 0 }}
                 animate={{ cx: [840, 1080], opacity: [0, 1, 0] }}
                 transition={{ repeat: Infinity, duration: 3, ease: "easeInOut", delay: 1.5 }}
               />
@@ -123,7 +175,7 @@ const Header = () => {
             </motion.div>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>

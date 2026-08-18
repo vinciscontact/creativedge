@@ -35,7 +35,9 @@ const PillLink = ({ to, label, filled }) => (
 
 /* Home — full-width dark band with a giant word strip gliding behind the content */
 const BandCta = ({ eyebrow, title, subtitle, primary, secondary, marqueeWords }) => (
-  <section className="relative z-10 py-stack-lg">
+  // No bottom padding: the dark band is the last thing before the dark footer,
+  // so spacing there would just expose the light page background as a stripe.
+  <section className="relative z-10 pt-stack-lg">
     <motion.div {...reveal} className="cta-hook relative bg-primary text-surface overflow-hidden py-24 sm:py-32">
       <div className="ambient-glow top-[-30%] left-[10%] bg-accent opacity-20"></div>
       <div className="ambient-glow bottom-[-30%] right-[10%] bg-secondary opacity-10"></div>

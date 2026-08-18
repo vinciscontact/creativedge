@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Seo from '../components/Seo';
 import Testimonials from '../components/ui/Testimonials';
-import CtaHook from '../components/ui/CtaHook';
 import { asset } from '../lib/asset';
 
 // The two sides of the studio, framed as outcomes. The full service detail
@@ -177,20 +176,6 @@ const Home = () => {
 
       {/* Testimonials */}
       <Testimonials />
-
-      {/* Engagement hook */}
-      <CtaHook
-        variant="band"
-        eyebrow="Let's Create"
-        title={
-          <>
-            Your brand deserves to be <span className="text-gradient">unforgettable.</span>
-          </>
-        }
-        subtitle="From a single logo to a full identity system — let's build something the world remembers."
-        primary={{ label: 'View Our Work', to: '/portfolio' }}
-        secondary={{ label: 'Start Your Project', to: '/contact' }}
-      />
     </div>
   );
 };

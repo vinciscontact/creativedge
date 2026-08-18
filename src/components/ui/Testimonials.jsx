@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { Fragment, useCallback, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { asset } from '../../lib/asset';
 
@@ -98,55 +98,187 @@ const Stars = ({ count }) => (
   </div>
 );
 
+const FeaturedCard = ({ c }) => (
+  <div className="glass-card h-full flex flex-col overflow-hidden border border-accent/25">
+    <div className="relative bg-gradient-to-br from-primary/[0.06] to-accent/[0.08]">
+      <div className="h-52 flex items-center justify-center p-3">
+        <img
+          src={c.img}
+          alt={c.name}
+          loading="lazy"
+          decoding="async"
+          className="max-w-full max-h-full object-contain rounded-xl"
+        />
+      </div>
+      <span className="absolute top-4 left-4 font-outfit text-[9px] font-black tracking-[0.25em] text-primary uppercase bg-accent px-3 py-1.5 rounded-full shadow-lg">
+        Featured Client
+      </span>
+    </div>
+    <div className="p-8 pt-6 flex flex-col flex-grow">
+      <Stars count={5} />
+      <h3 className="syne-title text-xl text-primary mb-3">
+        <span className="text-gradient">{c.tagline}</span>
+      </h3>
+      <p className="font-inter text-primary/80 leading-relaxed text-[15px] mb-8 flex-grow">"{c.quote}"</p>
+      <div className="pt-6 border-t border-primary/5">
+        <div className="font-outfit text-sm font-black text-primary uppercase tracking-wide">{c.name}</div>
+        <div className="font-inter text-[12px] text-secondary">{c.role}</div>
+      </div>
+    </div>
+  </div>
+);
+
+const ReviewCard = ({ t }) => (
+  <div className="glass-card h-full flex flex-col overflow-hidden">
+    {/* Initial panel mirrors the featured cards' photo slot so every card shares the same top rhythm */}
+    <div className="h-52 flex items-center justify-center bg-gradient-to-br from-primary/[0.06] to-accent/[0.08]">
+      <span
+        aria-hidden="true"
+        className="font-syne font-extrabold uppercase text-[6.5rem] leading-none text-primary/15 select-none"
+      >
+        {t.name[0]}
+      </span>
+    </div>
+    <div className="p-8 pt-6 flex flex-col flex-grow">
+      <Stars count={t.rating} />
+      <p className="font-inter text-primary/80 leading-relaxed text-[15px] mb-8 flex-grow">"{t.quote}"</p>
+      <div className="flex items-center gap-4 pt-6 border-t border-primary/5">
+        <div className="w-11 h-11 rounded-full bg-primary text-surface flex items-center justify-center font-outfit text-[13px] font-black shrink-0">
+          {initials(t.name)}
+        </div>
+        <div>
+          <div className="font-outfit text-sm font-black text-primary uppercase tracking-wide">{t.name}</div>
+          <div className="font-inter text-[12px] text-secondary">{t.role}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// Featured clients lead, Google reviews follow. The run is rendered twice so
+// the carousel can loop without the visitor ever seeing it rewind.
+const SLIDES = [
+  ...famousClients.map((c) => ({ kind: 'featured', id: c.name, data: c })),
+  ...testimonials.map((t) => ({ kind: 'review', id: t.name, data: t })),
+];
+const COPIES = [0, 1];
+
+// Glide speed in px/second. Slow enough that a review stays readable as it
+// travels; hovering stops it outright.
+const GLIDE_SPEED = 38;
+
+// The track sets scroll-smooth in CSS, so a wrap has to opt out of it or the
+// correction animates and the seam becomes visible.
+const jumpTo = (el, left) => {
+  const previous = el.style.scrollBehavior;
+  el.style.scrollBehavior = 'auto';
+  el.scrollLeft = left;
+  el.style.scrollBehavior = previous;
+};
+
+// Distance from the first card of one copy to the first card of the next.
+// Measured rather than derived from scrollWidth, which also counts the
+// track's own horizontal padding.
+const copyWidth = (el) => {
+  const marks = el.querySelectorAll('[data-loop-start]');
+  return marks.length === 2 ? marks[1].offsetLeft - marks[0].offsetLeft : 0;
+};
+
 const Testimonials = () => {
   const trackRef = useRef(null);
+  const pausedRef = useRef(false);
+  const resumeRef = useRef(0);
+
+  // Hold the glide still for a moment — used whenever the visitor takes over.
+  const holdMotion = useCallback((ms) => {
+    clearTimeout(resumeRef.current);
+    pausedRef.current = true;
+    if (ms > 0) resumeRef.current = setTimeout(() => { pausedRef.current = false; }, ms);
+  }, []);
 
   const slide = (dir) => {
     const el = trackRef.current;
     if (!el) return;
+    // Let the arrow's own smooth scroll finish before the glide takes over.
+    holdMotion(4000);
+    // Stepping back from the very start hops to the twin copy first, so the
+    // arrow keeps travelling instead of dead-ending at zero.
+    const width = copyWidth(el);
+    if (dir < 0 && width > 0 && el.scrollLeft <= 1) jumpTo(el, width);
     el.scrollBy({ left: dir * el.clientWidth * 0.9, behavior: 'smooth' });
   };
 
-  // Auto-advance the wall of reviews; pauses while the visitor hovers or
-  // swipes, loops back to the start, and stays off for reduced-motion users.
+  // The wall glides continuously rather than stepping. Once it passes the
+  // first copy it snaps back by exactly one copy — identical cards sit under
+  // the viewport, so the travel never appears to restart.
   useEffect(() => {
     const el = trackRef.current;
-    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!el) return;
 
-    let paused = false;
-    let resumeTimer;
-    const pause = () => {
-      paused = true;
-      clearTimeout(resumeTimer);
-    };
-    const resumeSoon = () => {
-      clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(() => {
-        paused = false;
-      }, 5000);
-    };
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+    // A swipe past the first copy has to loop too, not just the glide.
+    let settle;
+    const onScroll = () => {
+      clearTimeout(settle);
+      settle = setTimeout(() => {
+        const width = copyWidth(el);
+        if (width > 0 && el.scrollLeft >= width) jumpTo(el, el.scrollLeft - width);
+      }, 120);
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+
+    const pause = () => holdMotion(0);
+    const resumeSoon = () => holdMotion(1500);
     el.addEventListener('pointerenter', pause);
     el.addEventListener('pointerleave', resumeSoon);
     el.addEventListener('touchstart', pause, { passive: true });
     el.addEventListener('touchend', resumeSoon, { passive: true });
 
-    const id = setInterval(() => {
-      if (paused || document.hidden) return;
-      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 8;
-      if (atEnd) el.scrollTo({ left: 0, behavior: 'smooth' });
-      else el.scrollBy({ left: el.clientWidth * 0.9, behavior: 'smooth' });
-    }, 4500);
+    let frame = 0;
+    let previous = 0;
+    // Browsers round scrollLeft to whole pixels, so reading it back as the
+    // running total would quantise every frame up to 1px and overspeed the
+    // glide. This float stays authoritative; scrollLeft is only the output.
+    let position = el.scrollLeft;
+    let lastWritten = el.scrollLeft;
+
+    const tick = (now) => {
+      frame = requestAnimationFrame(tick);
+      // Clamp so returning to a backgrounded tab doesn't lurch the track.
+      const elapsed = previous ? Math.min((now - previous) / 1000, 0.05) : 0;
+      previous = now;
+
+      if (reduced.matches || pausedRef.current || document.hidden) {
+        // Stay in step with wherever the visitor left it.
+        position = el.scrollLeft;
+        lastWritten = position;
+        return;
+      }
+
+      // A swipe or arrow moved the track out from under us — adopt it.
+      if (Math.abs(el.scrollLeft - lastWritten) > 2) position = el.scrollLeft;
+
+      const width = copyWidth(el);
+      position += GLIDE_SPEED * elapsed;
+      if (width > 0 && position >= width) position -= width;
+
+      jumpTo(el, position);
+      lastWritten = el.scrollLeft;
+    };
+    frame = requestAnimationFrame(tick);
 
     return () => {
-      clearInterval(id);
-      clearTimeout(resumeTimer);
+      cancelAnimationFrame(frame);
+      clearTimeout(settle);
+      clearTimeout(resumeRef.current);
+      el.removeEventListener('scroll', onScroll);
       el.removeEventListener('pointerenter', pause);
       el.removeEventListener('pointerleave', resumeSoon);
       el.removeEventListener('touchstart', pause);
       el.removeEventListener('touchend', resumeSoon);
     };
-  }, []);
+  }, [holdMotion]);
 
   return (
     <section className="py-stack-lg relative z-10 overflow-hidden">
@@ -181,74 +313,27 @@ const Testimonials = () => {
           {/* Track — native swipe/scroll-snap; drag on touch, arrows on desktop */}
           <div
             ref={trackRef}
-            className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 -mx-margin px-margin scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            className="flex gap-6 overflow-x-auto pb-4 -mx-margin px-margin [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           >
-            {/* Featured clients — richer cards with photo and badge */}
-            {famousClients.map((c) => (
-              <div
-                key={c.name}
-                className="snap-start shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
-              >
-                <div className="glass-card h-full flex flex-col overflow-hidden border border-accent/25">
-                  <div className="relative bg-gradient-to-br from-primary/[0.06] to-accent/[0.08]">
-                    <div className="h-52 flex items-center justify-center p-3">
-                      <img
-                        src={c.img}
-                        alt={c.name}
-                        loading="lazy"
-                        decoding="async"
-                        className="max-w-full max-h-full object-contain rounded-xl"
-                      />
-                    </div>
-                    <span className="absolute top-4 left-4 font-outfit text-[9px] font-black tracking-[0.25em] text-primary uppercase bg-accent px-3 py-1.5 rounded-full shadow-lg">
-                      Featured Client
-                    </span>
+            {COPIES.map((copy) => (
+              <Fragment key={copy}>
+                {SLIDES.map((slideItem, index) => (
+                  <div
+                    key={`${copy}-${slideItem.id}`}
+                    // The duplicate run is decorative; hiding it keeps assistive
+                    // tech from reading every review out twice.
+                    aria-hidden={copy === 1 ? 'true' : undefined}
+                    data-loop-start={index === 0 ? '' : undefined}
+                    className="shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
+                  >
+                    {slideItem.kind === 'featured' ? (
+                      <FeaturedCard c={slideItem.data} />
+                    ) : (
+                      <ReviewCard t={slideItem.data} />
+                    )}
                   </div>
-                  <div className="p-8 pt-6 flex flex-col flex-grow">
-                    <Stars count={5} />
-                    <h3 className="syne-title text-xl text-primary mb-3">
-                      <span className="text-gradient">{c.tagline}</span>
-                    </h3>
-                    <p className="font-inter text-primary/80 leading-relaxed text-[15px] mb-8 flex-grow">"{c.quote}"</p>
-                    <div className="pt-6 border-t border-primary/5">
-                      <div className="font-outfit text-sm font-black text-primary uppercase tracking-wide">{c.name}</div>
-                      <div className="font-inter text-[12px] text-secondary">{c.role}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {testimonials.map((t) => (
-              <div
-                key={t.name}
-                className="snap-start shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
-              >
-                <div className="glass-card h-full flex flex-col overflow-hidden">
-                  {/* Initial panel mirrors the featured cards' photo slot so every card shares the same top rhythm */}
-                  <div className="h-52 flex items-center justify-center bg-gradient-to-br from-primary/[0.06] to-accent/[0.08]">
-                    <span
-                      aria-hidden="true"
-                      className="font-syne font-extrabold uppercase text-[6.5rem] leading-none text-primary/15 select-none"
-                    >
-                      {t.name[0]}
-                    </span>
-                  </div>
-                  <div className="p-8 pt-6 flex flex-col flex-grow">
-                    <Stars count={t.rating} />
-                    <p className="font-inter text-primary/80 leading-relaxed text-[15px] mb-8 flex-grow">"{t.quote}"</p>
-                    <div className="flex items-center gap-4 pt-6 border-t border-primary/5">
-                      <div className="w-11 h-11 rounded-full bg-primary text-surface flex items-center justify-center font-outfit text-[13px] font-black shrink-0">
-                        {initials(t.name)}
-                      </div>
-                      <div>
-                        <div className="font-outfit text-sm font-black text-primary uppercase tracking-wide">{t.name}</div>
-                        <div className="font-inter text-[12px] text-secondary">{t.role}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                ))}
+              </Fragment>
             ))}
           </div>
 

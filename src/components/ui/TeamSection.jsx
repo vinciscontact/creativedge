@@ -16,12 +16,6 @@ const MEMBERS = [
   },
   {
     group: 'Creative Team',
-    imgSrc: asset('/images/portfolio%20projects/Our%20team/Deepika.webp'),
-    name: 'Deepika',
-    role: 'Finance / CRM',
-  },
-  {
-    group: 'Creative Team',
     imgSrc: asset('/images/portfolio%20projects/Our%20team/sivabalan.webp'),
     name: 'Sivabalan',
     role: 'Creative Strategy Director',
@@ -40,14 +34,26 @@ const MEMBERS = [
     role: 'Lead - Visual Designer & Digital Marketing Specialist',
     logo: asset('/images/portfolio%20projects/Our%20team/TC%20BG.webp'),
   },
+  {
+    group: 'Creative Team',
+    imgSrc: asset('/images/portfolio%20projects/Our%20team/Deepika.webp'),
+    name: 'Deepika',
+    role: 'Finance / CRM',
+  },
 ];
+
+// Partner cards lay their four blocks — logo, name, tag, copy — onto shared
+// row tracks via subgrid, so they line up across a row however many lines a
+// name wraps to. Partners are chunked into visual rows so each grid owns
+// exactly one row of cards and can zero its row gap, keeping each card's
+// tracks flush with its parent's.
+const PARTNERS_PER_ROW = 2;
 
 const PARTNERS = [
   {
-    name: 'Tryphena Corera',
-    tag: 'Design Partner',
-    desc: 'Design partner uniting sharp visual identity with growth-led digital marketing — shaping brand visuals and campaigns that don’t just look striking, but move the numbers.',
-    logo: asset('/images/portfolio%20projects/Our%20team/TC%20BG.webp'),
+    name: 'Cations Digital',
+    tag: 'Digital Marketing Agency — Mumbai',
+    desc: 'Cations Digital Pvt. Ltd. is an end-to-end digital marketing agency based in Mumbai, India, and one of the fastest-growing companies in this segment — with deep digital domain expertise covering SEO, PPC, SMO, and web design & development, and 1000+ clients supported across business verticals and geographies.',
   },
   {
     name: 'VJM Technologies',
@@ -55,9 +61,10 @@ const PARTNERS = [
     desc: 'Technology partner providing reliable website support and innovative digital solutions, backed by 15+ years of industry experience.',
   },
   {
-    name: 'Cations Digital',
-    tag: 'Digital Marketing Agency — Mumbai',
-    desc: 'Cations Digital Pvt. Ltd. is an end-to-end digital marketing agency based in Mumbai, India, and one of the fastest-growing companies in this segment — with deep digital domain expertise covering SEO, PPC, SMO, and web design & development, and 1000+ clients supported across business verticals and geographies.',
+    name: 'Tryphena Corera',
+    tag: 'Design Partner',
+    desc: 'Design partner uniting sharp visual identity with growth-led digital marketing — shaping brand visuals and campaigns that don’t just look striking, but move the numbers.',
+    logo: asset('/images/portfolio%20projects/Our%20team/TC%20BG.webp'),
   },
   {
     name: 'TheVincis',
@@ -108,6 +115,12 @@ const TeamSection = () => {
       mm.revert();
     };
   }, []);
+
+  // Group partners into visual rows so each grid owns one row of cards.
+  const partnerRows = [];
+  for (let i = 0; i < PARTNERS.length; i += PARTNERS_PER_ROW) {
+    partnerRows.push(PARTNERS.slice(i, i + PARTNERS_PER_ROW));
+  }
 
   return (
     <section ref={sectionRef} className="relative bg-primary text-surface py-24 md:py-32">
@@ -232,23 +245,36 @@ const TeamSection = () => {
             <span className="font-outfit text-[11px] font-black tracking-[0.4em] uppercase text-accent">Strategic Partners</span>
             <div className="flex-1 h-[1px] bg-surface/10"></div>
           </div>
-          <div className="grid md:grid-cols-2 gap-6">
-            {PARTNERS.map((partner) => (
-              <div key={partner.name} className="team-reveal min-w-0 rounded-[24px] border border-surface/10 bg-surface/[0.03] p-8 md:p-10 [container-type:inline-size]">
-                {partner.logo && (
-                  <img
-                    src={partner.logo}
-                    alt={`${partner.name} logo`}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-14 h-14 rounded-xl bg-white object-contain mb-5"
-                  />
-                )}
-                {/* Syne is ~13.4x font-size for "Technologies"; 7.2cqw guarantees the longest
-                    word always fits its card whole at any width — words are never split */}
-                <h3 className="syne-title text-[clamp(1.05rem,7.2cqw,1.875rem)] text-surface">{partner.name}</h3>
-                <p className="font-outfit text-[10px] tracking-[0.15em] uppercase font-black text-accent mt-2">{partner.tag}</p>
-                <p className="font-inter text-sm text-surface/60 leading-relaxed mt-4">{partner.desc}</p>
+          <div className="flex flex-col gap-6">
+            {partnerRows.map((row) => (
+              <div key={row[0].name} className="grid gap-6 md:grid-cols-2 md:gap-y-0 md:[grid-template-rows:repeat(4,auto)]">
+                {row.map((partner) => (
+                  <div key={partner.name} className="team-reveal min-w-0 rounded-[24px] border border-surface/10 bg-surface/[0.03] p-8 md:p-10 md:grid md:[grid-template-rows:subgrid] md:[grid-row:span_4]">
+                    {/* Logo track. Logo-less cards still occupy it so their name
+                        starts level with a logo-bearing card in the same row; in a
+                        row where nobody has one the track collapses to nothing. */}
+                    {partner.logo ? (
+                      <img
+                        src={partner.logo}
+                        alt={`${partner.name} logo`}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-14 h-14 rounded-xl bg-white object-contain mb-5"
+                      />
+                    ) : (
+                      <div aria-hidden="true" />
+                    )}
+                    {/* Syne is ~13.4x font-size for "Technologies"; 7.2cqw guarantees the longest
+                        word always fits its card whole at any width — words are never split.
+                        The query container sits here rather than on the card because
+                        containment would stop the card acting as a subgrid. */}
+                    <div className="min-w-0 [container-type:inline-size]">
+                      <h3 className="syne-title text-[clamp(1.05rem,7.2cqw,1.875rem)] text-surface">{partner.name}</h3>
+                    </div>
+                    <p className="font-outfit text-[10px] tracking-[0.15em] uppercase font-black text-accent mt-2">{partner.tag}</p>
+                    <p className="font-inter text-sm text-surface/60 leading-relaxed mt-4">{partner.desc}</p>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
