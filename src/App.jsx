@@ -68,7 +68,13 @@ function App() {
       <MotionConfig reducedMotion="user">
         <div className="flex flex-col min-h-screen">
           <Header />
-          <main className="flex-grow">
+          {/* min-h-screen, not just flex-grow: between one route unmounting and
+              the next one painting, <main> has no content. flex-grow can't hold
+              the gap open because the footer is taller than the viewport, so
+              there's no free space left to grow into — main collapsed to 0 and
+              the footer flew up to the top of the screen on every reload and
+              navigation. The floor keeps it below the fold until the page lands. */}
+          <main className="flex-grow min-h-screen">
             <AnimatedRoutes />
           </main>
 

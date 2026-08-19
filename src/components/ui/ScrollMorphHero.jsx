@@ -7,7 +7,7 @@ const IMG_WIDTH = 60;
 const IMG_HEIGHT = 85;
 
 // --- Main Hero Component ---
-const TOTAL_IMAGES = 20;
+const TOTAL_IMAGES = 19;
 
 // Real CreativzEdge work, served from /public/images/portfolio projects.
 // encodeURI() handles the spaces in the folder / file names. Data names the
@@ -29,7 +29,6 @@ const IMAGES = [
     { src: page("Branding", "10", 8), label: "Brand Identity" },
     { src: u("Logo", "automation.jpg"), label: "Logo Design" },
     { src: u("Logo", "hovik.jpg"), label: "Logo Design" },
-    { src: u("Logo", "mulier .jpg"), label: "Logo Design" },
     { src: u("Logo", "rawyals .jpg"), label: "Logo Design" },
     { src: page("Packaging", "12", 1), label: "Packaging" },
     { src: page("Packaging", "12", 2), label: "Packaging" },

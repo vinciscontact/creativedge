@@ -162,7 +162,12 @@
       "PowerShell(\"--- sitemap ---\")",
       "PowerShell(\"--- llms head ---\")",
       "PowerShell(git remote set-url origin https://vinciscontact@github.com/vinciscontact/creativedge.git)",
-      "PowerShell(npx eslint src/config/site.js src/pages/Contact.jsx src/pages/About.jsx src/pages/Home.jsx src/pages/Services.jsx src/components/ui/ContactFloat.jsx src/App.jsx)"
+      "PowerShell(npx eslint src/config/site.js src/pages/Contact.jsx src/pages/About.jsx src/pages/Home.jsx src/pages/Services.jsx src/components/ui/ContactFloat.jsx src/App.jsx)",
+      "Bash(gh api *)",
+      "Bash(gh run *)",
+      "Bash(curl -s https://api.github.com/repos/vinciscontact/creativedge/commits/833fa1e/status)",
+      "Bash(curl -s -H \"Accept: application/vnd.github+json\" https://api.github.com/repos/vinciscontact/creativedge/commits/833fa1e/check-runs)",
+      "Bash(curl -s https://api.github.com/repos/vinciscontact/creativedge/commits/d74bc99/status)"
     ]
   }
 }

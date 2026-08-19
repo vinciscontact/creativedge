@@ -5,6 +5,7 @@ import { SplitText } from 'gsap/SplitText';
 import ScrollMorphHero from '../components/ui/ScrollMorphHero';
 import Seo from '../components/Seo';
 import CtaHook from '../components/ui/CtaHook';
+import Lightbox from '../components/ui/Lightbox';
 import { asset } from '../lib/asset';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -38,7 +39,6 @@ const chapters = [
       ...pageImages('Logo', '08', [4, 5, 6, 8, 11, 12, 13, 14, 15, 16, 17, 18]),
       src('Logo', 'automation.jpg'),
       src('Logo', 'hovik.jpg'),
-      src('Logo', 'mulier .jpg'),
       src('Logo', 'rawyals .jpg'),
     ],
   },
@@ -77,7 +77,7 @@ const chapters = [
     label: 'Events',
     headline: 'Moments, engineered.',
     desc: 'From stage to signage, we design the spaces and details that turn an event into an experience.',
-    images: [...pageImages('Events', '13', [1, 2, 3, 4, 5]), src('Events', 'CREATIVZEDGE PORTFOLIO_Page_16_Image_0001.jpg')],
+    images: pageImages('Events', '13', [1, 2, 3, 4, 5]),
   },
 ];
 
@@ -89,11 +89,39 @@ const clients = [
 
 const marqueeItems = ['Logo Design', 'Brand Identity', 'Social Media', 'Packaging', 'Vehicle Branding', 'Events'];
 
+// Lightbox payloads. Built at click time so the arrows cycle only within the
+// group the visitor actually opened.
+const viewerItems = (chapter) =>
+  chapter.images.map((src, i) => ({ src, alt: `${chapter.label} work ${i + 1}`, label: chapter.label }));
+
+const clientItems = clients.map((src, i) => ({ src, alt: `Client ${i + 1}`, label: 'Our Clients' }));
+
+// The hover tell that a tile is openable — a small expand glyph that fades in
+// with the rest of the tile's hover state. pointer-events-none so it never
+// swallows the click meant for the tile underneath.
+const ExpandCue = () => (
+  <span
+    aria-hidden="true"
+    className="pointer-events-none absolute top-4 right-4 z-20 grid place-items-center w-9 h-9 rounded-full bg-black/45 backdrop-blur-sm text-white opacity-0 scale-90 transition-all duration-500 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-visible:scale-100"
+  >
+    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 3h6v6M21 3l-7 7M9 21H3v-6M3 21l7-7" />
+    </svg>
+  </span>
+);
+
 const Portfolio = () => {
   const rootRef = useRef(null);
   // Chapter filter — 'all' or a chapter label. Changing it re-runs the GSAP
   // setup effect below so reveals/pins rebuild against the filtered DOM.
   const [filter, setFilter] = useState('all');
+
+  // Lightbox state. `items` is the set the arrows cycle through (one chapter's
+  // gallery, the clients row, …) so next/prev stay inside the group that was
+  // clicked; `index` of null means closed.
+  const [viewer, setViewer] = useState({ items: [], index: null });
+  const openViewer = (items, index) => setViewer({ items, index });
+  const closeViewer = () => setViewer((v) => ({ ...v, index: null }));
 
   // Deep links from the services page (/portfolio#logo-design) land on their
   // chapter. Delayed so the route transition's scroll-to-top and the pinned
@@ -310,7 +338,12 @@ const Portfolio = () => {
 
         {/* Featured case study */}
         <div className="featured-block grid lg:grid-cols-2 gap-12 items-center mb-40">
-          <div className="featured-media relative rounded-3xl overflow-hidden glass-card !p-0 bg-white/[0.02]">
+          <button
+            type="button"
+            onClick={() => openViewer([{ src: featured.img, alt: featured.title, label: featured.eyebrow }], 0)}
+            aria-label={`View the ${featured.title} case study image full size`}
+            className="featured-media group relative block w-full cursor-zoom-in rounded-3xl overflow-hidden glass-card !p-0 bg-white/[0.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
             <img
               src={featured.img}
               alt={featured.title}
@@ -318,7 +351,8 @@ const Portfolio = () => {
             />
             {/* Cover panel that unmasks the artwork on scroll */}
             <div className="media-cover absolute inset-0 bg-background z-10 pointer-events-none"></div>
-          </div>
+            <ExpandCue />
+          </button>
           <div className="lg:pl-6">
             <span className="featured-rise font-outfit text-[11px] font-black tracking-[0.3em] text-accent uppercase block mb-5">
               {featured.eyebrow}
@@ -380,9 +414,12 @@ const Portfolio = () => {
               <div className="hscroll-wrap">
                 <div className="hscroll-track grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {chapter.images.map((img, i) => (
-                    <div
+                    <button
                       key={i}
-                      className="hscroll-item group relative rounded-2xl overflow-hidden glass-card !p-0"
+                      type="button"
+                      onClick={() => openViewer(viewerItems(chapter), i)}
+                      aria-label={`View ${chapter.label} work ${i + 1} full size`}
+                      className="hscroll-item group relative block w-full cursor-zoom-in rounded-2xl overflow-hidden glass-card !p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     >
                       <img
                         src={img}
@@ -395,7 +432,8 @@ const Portfolio = () => {
                       <span className="absolute bottom-4 left-5 font-outfit text-[10px] font-black tracking-widest text-white uppercase opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
                         {chapter.label}
                       </span>
-                    </div>
+                      <ExpandCue />
+                    </button>
                   ))}
                 </div>
               </div>
@@ -403,9 +441,12 @@ const Portfolio = () => {
               /* Masonry gallery */
               <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 [column-fill:_balance]">
                 {chapter.images.map((img, i) => (
-                  <div
+                  <button
                     key={i}
-                    className="gallery-item group relative mb-6 break-inside-avoid rounded-2xl overflow-hidden glass-card !p-0"
+                    type="button"
+                    onClick={() => openViewer(viewerItems(chapter), i)}
+                    aria-label={`View ${chapter.label} work ${i + 1} full size`}
+                    className="gallery-item group relative block w-full cursor-zoom-in mb-6 break-inside-avoid rounded-2xl overflow-hidden glass-card !p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     <img
                       src={img}
@@ -418,7 +459,8 @@ const Portfolio = () => {
                     <span className="absolute bottom-4 left-5 font-outfit text-[10px] font-black tracking-widest text-white uppercase opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
                       {chapter.label}
                     </span>
-                  </div>
+                    <ExpandCue />
+                  </button>
                 ))}
               </div>
             )}
@@ -460,9 +502,16 @@ const Portfolio = () => {
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {clients.map((img, i) => (
-            <div key={i} className="gallery-item rounded-2xl overflow-hidden glass-card !p-0">
-              <img src={img} alt={`Client ${i + 1}`} loading="lazy" decoding="async" className="w-full h-auto object-cover" />
-            </div>
+            <button
+              key={i}
+              type="button"
+              onClick={() => openViewer(clientItems, i)}
+              aria-label={`View client logos ${i + 1} full size`}
+              className="gallery-item group relative block w-full cursor-zoom-in rounded-2xl overflow-hidden glass-card !p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <img src={img} alt={`Client ${i + 1}`} loading="lazy" decoding="async" className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
+              <ExpandCue />
+            </button>
           ))}
         </div>
       </section>
@@ -479,6 +528,14 @@ const Portfolio = () => {
         subtitle="Every project here started with a single conversation. Let's start yours."
         primary={{ label: 'Start a Project', to: '/contact' }}
         secondary={{ label: 'Our Services', to: '/services' }}
+      />
+
+      {/* Full-screen viewer for any tile on the page (portals into <body>) */}
+      <Lightbox
+        items={viewer.items}
+        index={viewer.index}
+        onClose={closeViewer}
+        onNavigate={(i) => setViewer((v) => ({ ...v, index: i }))}
       />
     </div>
   );
